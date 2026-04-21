@@ -17,13 +17,13 @@ services:
       - key: DJANGO_ALLOWED_HOSTS
         fromDatabase:
           name: single-origin-society
-          property: hostname
+          property: host
       - key: DB_ENGINE
         value: django.db.backends.postgresql
       - key: DB_NAME
         fromDatabase:
           name: single-origin-society
-          property: name
+          property: database
       - key: DB_USER
         fromDatabase:
           name: single-origin-society
