@@ -51,6 +51,5 @@ services:
 
 databases:
   - name: single-origin-society
-    plan: standard
     ipAllowList: []
     postgresMajorVersion: 15
