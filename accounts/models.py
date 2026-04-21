@@ -216,6 +216,8 @@ class User(AbstractUser):
     def has_portal_permission(self, permission_key):
         if not self.is_authenticated:
             return False
+        if self.is_superuser:
+            return True
         permissions = set(ROLE_PERMISSION_MATRIX.get(self.normalized_role, set()))
         if self.role_profile_id:
             profile_permissions = self.role_profile.permissions.filter(is_active=True).values_list("code", flat=True)
