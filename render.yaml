@@ -1,0 +1,56 @@
+services:
+  - type: web
+    name: single-origin-society
+    env: python
+    plan: standard
+    buildCommand: >
+      pip install --upgrade pip &&
+      pip install -r requirements.txt &&
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn sos_project.wsgi:application
+    numInstances: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.4
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        fromDatabase:
+          name: single-origin-society
+          property: hostname
+      - key: DB_ENGINE
+        value: django.db.backends.postgresql
+      - key: DB_NAME
+        fromDatabase:
+          name: single-origin-society
+          property: name
+      - key: DB_USER
+        fromDatabase:
+          name: single-origin-society
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: single-origin-society
+          property: password
+      - key: DB_HOST
+        fromDatabase:
+          name: single-origin-society
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: single-origin-society
+          property: port
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: STRIPE_PUBLIC_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+
+databases:
+  - name: single-origin-society
+    plan: standard
+    ipAllowList: []
+    postgresMajorVersion: 15

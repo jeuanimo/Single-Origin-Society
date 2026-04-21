@@ -38,7 +38,29 @@ docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
 ```
 
-## Apps
+## Deployment
+
+Deploy to **Render.com** with zero-downtime CI/CD:
+
+```bash
+# 1. Push to GitHub
+git push origin main
+
+# 2. Render auto-deploys (see .github/workflows for CI)
+# 3. Migrations run automatically via Procfile
+# 4. Static files collected via build command
+```
+
+**Full deployment guide:** See [DEPLOYMENT.md](DEPLOYMENT.md)
+
+### Deployment Files
+
+- `Procfile` – Release and web process definitions
+- `render.yaml` – Declarative Render infrastructure
+- `runtime.txt` – Python version specification
+- `.github/workflows/django.yml` – GitHub Actions CI/CD
+
+---
 
 | App | Purpose |
 |---|---|

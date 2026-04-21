@@ -2,6 +2,8 @@
 Django>=6.0,<6.1
 gunicorn>=23.0,<24.0
 psycopg[binary]>=3.2,<4.0
+whitenoise>=6.8,<7.0
+sendgrid-django>=4.2,<5.0
 
 # ---------- payments ----------
 stripe>=15.0,<16.0
@@ -16,3 +18,4 @@ crispy-bootstrap5>=2025.4,<2026.0
 
 # ---------- dev / testing ----------
 django-debug-toolbar>=5.0,<6.0
+

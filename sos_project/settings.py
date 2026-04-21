@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     "support",
     "reviews",
     "business_config",
+    "services",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "storefront.middleware.ReferralTrackingMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -104,6 +106,9 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# WhiteNoise static file compression and caching for production
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -119,3 +124,66 @@ STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
 STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ────────────────────────────────────────────────────
+# Email Configuration
+# ────────────────────────────────────────────────────
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend" if DEBUG else "django.core.mail.backends.smtp.EmailBackend"
+)
+
+# SendGrid configuration (recommended for production)
+if os.environ.get("SENDGRID_API_KEY"):
+    EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+    SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
+
+# Standard SMTP configuration (alternative)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() in ("true", "1")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@singleoriginsociety.com")
+SERVER_EMAIL = os.environ.get("SERVER_EMAIL", DEFAULT_FROM_EMAIL)
+
+# ────────────────────────────────────────────────────
+# Production Security Settings
+# ────────────────────────────────────────────────────
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_SECURITY_POLICY = {
+        "default-src": ("'self'",),
+        "script-src": ("'self'", "'unsafe-inline'", "cdn.jsdelivr.net"),
+        "style-src": ("'self'", "'unsafe-inline'", "fonts.googleapis.com"),
+        "font-src": ("'self'", "fonts.gstatic.com"),
+        "img-src": ("'self'", "data:", "https:"),
+    }
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+# ────────────────────────────────────────────────────
+# Render Deployment: Trust Proxy Headers
+# ────────────────────────────────────────────────────
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# ────────────────────────────────────────────────────
+# Logging (basic production logging)
+# ────────────────────────────────────────────────────
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+}
