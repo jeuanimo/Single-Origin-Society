@@ -15,9 +15,9 @@ services:
       - key: DJANGO_DEBUG
         value: "False"
       - key: DJANGO_ALLOWED_HOSTS
-        fromDatabase:
-          name: single-origin-society
-          property: host
+        value: single-origin-society.onrender.com,localhost,127.0.0.1
+      - key: DJANGO_CSRF_TRUSTED_ORIGINS
+        value: https://single-origin-society.onrender.com
       - key: DB_ENGINE
         value: django.db.backends.postgresql
       - key: DB_NAME
