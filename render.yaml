@@ -7,6 +7,7 @@ services:
       pip install --upgrade pip &&
       pip install -r requirements.txt &&
       python manage.py collectstatic --noinput
+    preDeployCommand: python manage.py migrate
     startCommand: gunicorn sos_project.wsgi:application
     numInstances: 1
     envVars:
