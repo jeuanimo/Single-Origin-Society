@@ -11,7 +11,7 @@ services:
     numInstances: 1
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.4
+        value: 3.12.7
       - key: DJANGO_DEBUG
         value: "False"
       - key: DJANGO_ALLOWED_HOSTS
