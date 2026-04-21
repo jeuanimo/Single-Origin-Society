@@ -1,0 +1,32 @@
+{% extends "portal/base.html" %}
+{% block title %}Ritual Journal Posts{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Ritual Journal Posts</h2>
+  <a href="{% url 'portal:content_blog_new' %}" class="p-btn p-btn-primary">+ New Post</a>
+</div>
+
+<form method="get" class="p-inline-form p-mb-16">
+  <input type="search" name="q" value="{{ search_query }}" class="p-form-control" placeholder="Search journal posts...">
+  <button type="submit" class="p-btn p-btn-secondary">Search</button>
+</form>
+
+<div class="p-card">
+  <table class="p-table">
+    <thead><tr><th>Title</th><th>Type</th><th>Status</th><th>Publish At</th><th></th></tr></thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <td>{{ post.title }}</td>
+        <td>{{ post.get_entry_type_display }}</td>
+        <td><span class="badge badge-{{ post.status }}">{{ post.get_status_display }}</span></td>
+        <td>{{ post.published_at|date:"M j, Y H:i"|default:"—" }}</td>
+        <td class="actions"><a href="{% url 'portal:content_blog_edit' post.pk %}" class="p-btn p-btn-secondary p-btn-sm">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="p-empty">No journal posts found</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

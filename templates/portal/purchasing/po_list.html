@@ -1,0 +1,36 @@
+{% extends "portal/base.html" %}
+{% block title %}Purchase Orders{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Purchase Orders</h2>
+  <a href="{% url 'portal:purchase_order_new' %}" class="p-btn p-btn-primary">+ New PO</a>
+</div>
+<div class="p-filters">
+  <a href="{% url 'portal:purchase_order_list' %}" class="p-filter-btn {% if not current_status %}active{% endif %}">All</a>
+  <a href="?status=draft" class="p-filter-btn {% if current_status == 'draft' %}active{% endif %}">Draft</a>
+  <a href="?status=submitted" class="p-filter-btn {% if current_status == 'submitted' %}active{% endif %}">Submitted</a>
+  <a href="?status=confirmed" class="p-filter-btn {% if current_status == 'confirmed' %}active{% endif %}">Confirmed</a>
+  <a href="?status=received" class="p-filter-btn {% if current_status == 'received' %}active{% endif %}">Received</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead><tr><th>PO #</th><th>Supplier</th><th>Status</th><th>Total</th><th>Expected</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+      {% for po in page_obj %}
+      <tr>
+        <td><strong>{{ po.po_number }}</strong></td>
+        <td>{{ po.supplier.name }}</td>
+        <td><span class="badge badge-{{ po.status }}">{{ po.get_status_display }}</span></td>
+        <td>${{ po.total }}</td>
+        <td>{{ po.expected_date|date:"M j, Y"|default:"—" }}</td>
+        <td>{{ po.created_at|date:"M j, Y" }}</td>
+        <td class="actions"><a href="{% url 'portal:purchase_order_edit' po.pk %}" class="p-btn p-btn-secondary p-btn-sm">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="p-empty">No purchase orders</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

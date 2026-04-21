@@ -1,0 +1,25 @@
+{% extends "storefront/base.html" %}
+{% block title %}{{ page.title|default:policy_title|default:"Policies" }} · Single Origin Society{% endblock title %}
+{% block meta_description %}{{ page.meta_description|default:'Read Single Origin Society policies for shipping, refunds, privacy, and terms.' }}{% endblock meta_description %}
+{% block content %}
+<div class="page-hero">
+  <h1>{{ page.title|default:policy_title|default:"Policies" }}</h1>
+</div>
+<section class="section">
+  <div class="container-narrow">
+    <div class="policy-nav">
+      <a href="{% url 'storefront:policy_shipping' %}" class="btn btn-sm {% if policy_slug == 'shipping' %}btn-dark{% else %}btn-outline{% endif %}">Shipping</a>
+      <a href="{% url 'storefront:policy_refunds' %}" class="btn btn-sm {% if policy_slug == 'refunds' %}btn-dark{% else %}btn-outline{% endif %}">Refunds</a>
+      <a href="{% url 'storefront:policy_privacy' %}" class="btn btn-sm {% if policy_slug == 'privacy' %}btn-dark{% else %}btn-outline{% endif %}">Privacy</a>
+      <a href="{% url 'storefront:policy_terms' %}" class="btn btn-sm {% if policy_slug == 'terms' %}btn-dark{% else %}btn-outline{% endif %}">Terms</a>
+    </div>
+    <div class="page-content">
+      {% if page %}
+        {{ page.body|safe }}
+      {% else %}
+        {{ policy_body|safe }}
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock content %}

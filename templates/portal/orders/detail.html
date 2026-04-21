@@ -1,0 +1,160 @@
+{% extends "portal/base.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Order {{ order.order_number }}</h2>
+  <div class="actions">
+    <span class="badge badge-{{ order.status }} p-badge-lg">{{ order.get_status_display }}</span>
+    <a href="{% url 'portal:order_packing_slip' order.pk %}" class="p-btn p-btn-secondary p-btn-sm" target="_blank" rel="noopener">Packing Slip</a>
+  </div>
+</div>
+
+<div class="p-grid-detail">
+  <div>
+    <div class="p-card">
+      <div class="p-card-header"><h2>Items</h2></div>
+      <table class="p-table">
+        <thead><tr><th>Product</th><th>SKU</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead>
+        <tbody>
+          {% for item in order.items.all %}
+          <tr>
+            <td>{{ item.product_name }}</td>
+            <td>{{ item.product_sku }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.unit_price }}</td>
+            <td>${{ item.total_price }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="p-order-totals">
+        <span class="p-total-label">Subtotal</span>
+        <span class="p-total-value">${{ order.subtotal }}</span>
+        <br>
+        <span class="p-total-label">Shipping</span>
+        <span class="p-total-amount">${{ order.shipping_cost }}</span>
+        <br>
+        <span class="p-total-label">Tax</span>
+        <span class="p-total-amount">${{ order.tax }}</span>
+        <br>
+        <span class="p-total-final-label">Total</span>
+        <span class="p-total-final">${{ order.total }}</span>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <div class="p-card-header">
+        <h2>Shipments</h2>
+        <a href="{% url 'portal:shipment_create' order.pk %}" class="p-btn p-btn-primary p-btn-sm">Create Shipment</a>
+      </div>
+      {% for shipment in shipments %}
+      <div class="p-list-row">
+        <span class="badge badge-{{ shipment.status }}">{{ shipment.get_status_display }}</span>
+        <strong>{{ shipment.get_carrier_display }}</strong>
+        {% if shipment.tracking_number %} — {{ shipment.tracking_number }}{% endif %}
+        <span class="p-muted-ml">{{ shipment.created_at|date:"M j, Y" }}</span>
+      </div>
+      {% empty %}
+      <p class="p-muted">No shipments yet</p>
+      {% endfor %}
+    </div>
+
+    <div class="p-card">
+      <div class="p-card-header">
+        <h2>Returns</h2>
+        <a href="{% url 'portal:return_create' order.pk %}" class="p-btn p-btn-secondary p-btn-sm">Create Return</a>
+      </div>
+      {% for ret in order.returns.all %}
+      <div class="p-list-row">
+        <span class="badge badge-{{ ret.status }}">{{ ret.get_status_display }}</span>
+        <strong>{{ ret.return_number }}</strong> — {{ ret.get_reason_display }}
+        <span class="p-muted-ml">{{ ret.created_at|date:"M j, Y" }}</span>
+        <a href="{% url 'portal:return_detail' ret.pk %}" class="p-btn p-btn-secondary p-btn-sm">View</a>
+      </div>
+      {% empty %}
+      <p class="p-muted">No returns</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div>
+    <div class="p-card">
+      <h3 class="p-section-title">Update Status</h3>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="status">
+        <select name="status" class="p-form-control p-select-mb">
+          <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>Pending</option>
+          <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+          <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Processing</option>
+          <option value="shipped" {% if order.status == 'shipped' %}selected{% endif %}>Shipped</option>
+          <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Delivered</option>
+          <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+          <option value="refunded" {% if order.status == 'refunded' %}selected{% endif %}>Refunded</option>
+        </select>
+        <button type="submit" class="p-btn p-btn-primary p-btn-sm p-btn-full">Update</button>
+      </form>
+    </div>
+
+    <div class="p-card">
+      <h3 class="p-section-title">Order Notes</h3>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="notes">
+        <label for="id_notes" class="p-field-label">Internal Notes</label>
+        <textarea id="id_notes" name="notes" class="p-form-control p-mb-12" rows="4">{{ order.notes|default:'' }}</textarea>
+        <label for="id_gift_note" class="p-field-label">Gift Note</label>
+        <textarea id="id_gift_note" name="gift_note" class="p-form-control p-mb-12" rows="3">{{ order.gift_note|default:'' }}</textarea>
+        <button type="submit" class="p-btn p-btn-primary p-btn-sm p-btn-full">Save Notes</button>
+      </form>
+      <div class="p-inline-actions p-mt-12">
+        <form method="post" class="p-inline-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="cancel">
+          <button type="submit" class="p-btn p-btn-secondary p-btn-sm">Cancel Order</button>
+        </form>
+        <form method="post" class="p-inline-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="refund">
+          <button type="submit" class="p-btn p-btn-secondary p-btn-sm">Mark Refunded</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <h3 class="p-section-title">Customer</h3>
+      <div class="detail-item p-mb-12">
+        <span class="label">Name</span>
+        <div class="value">{{ order.first_name }} {{ order.last_name }}</div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Email</span>
+        <div class="value">{{ order.email }}</div>
+      </div>
+      {% if order.phone %}
+      <div class="detail-item p-mb-12">
+        <span class="label">Phone</span>
+        <div class="value">{{ order.phone }}</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="p-card">
+      <h3 class="p-section-title">Shipping Address</h3>
+      <p class="p-address-text">
+        {{ order.shipping_line1 }}<br>
+        {% if order.shipping_line2 %}{{ order.shipping_line2 }}<br>{% endif %}
+        {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal }}<br>
+        {{ order.shipping_country }}
+      </p>
+    </div>
+
+    {% if order.stripe_payment_intent %}
+    <div class="p-card">
+      <h3 class="p-section-title-sm">Payment</h3>
+      <p class="p-payment-text">Stripe: {{ order.stripe_payment_intent }}</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

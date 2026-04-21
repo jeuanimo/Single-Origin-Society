@@ -1,0 +1,36 @@
+{% extends "portal/base.html" %}
+{% block title %}Returns{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Returns</h2>
+<div class="p-filters">
+  <a href="{% url 'portal:return_list' %}" class="p-filter-btn {% if not current_status %}active{% endif %}">All</a>
+  <a href="?status=requested" class="p-filter-btn {% if current_status == 'requested' %}active{% endif %}">Requested</a>
+  <a href="?status=approved" class="p-filter-btn {% if current_status == 'approved' %}active{% endif %}">Approved</a>
+  <a href="?status=received" class="p-filter-btn {% if current_status == 'received' %}active{% endif %}">Received</a>
+  <a href="?status=refunded" class="p-filter-btn {% if current_status == 'refunded' %}active{% endif %}">Refunded</a>
+  <a href="?status=denied" class="p-filter-btn {% if current_status == 'denied' %}active{% endif %}">Denied</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead>
+      <tr><th>Return #</th><th>Order</th><th>Reason</th><th>Status</th><th>Refund</th><th>Date</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for ret in page_obj %}
+      <tr>
+        <td><strong>{{ ret.return_number }}</strong></td>
+        <td><a href="{% url 'portal:order_detail' ret.order.pk %}">{{ ret.order.order_number }}</a></td>
+        <td>{{ ret.get_reason_display }}</td>
+        <td><span class="badge badge-{{ ret.status }}">{{ ret.get_status_display }}</span></td>
+        <td>${{ ret.refund_amount }}</td>
+        <td>{{ ret.created_at|date:"M j, Y" }}</td>
+        <td class="actions"><a href="{% url 'portal:return_detail' ret.pk %}" class="p-btn p-btn-secondary p-btn-sm">View</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="p-empty">No returns</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

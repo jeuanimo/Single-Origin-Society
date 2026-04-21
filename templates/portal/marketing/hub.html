@@ -1,0 +1,25 @@
+{% extends "portal/base.html" %}
+{% block title %}Marketing Hub{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Marketing Hub</h2>
+
+<div class="p-stat-grid p-mb-24">
+  <div class="p-stat-card"><div class="p-stat-label">Newsletter Signups</div><div class="p-stat-value">{{ stats.newsletter_signups }}</div></div>
+  <div class="p-stat-card"><div class="p-stat-label">Active Promos</div><div class="p-stat-value">{{ stats.active_promos }}</div></div>
+  <div class="p-stat-card"><div class="p-stat-label">Active Campaigns</div><div class="p-stat-value">{{ stats.active_campaigns }}</div></div>
+</div>
+
+<div class="p-card p-mb-24">
+  <div class="p-card-header"><h2>Management Modules</h2></div>
+  <div class="p-module-grid">
+    {% for item in modules %}
+    <a href="{% url item.url_name %}" class="p-module-link">{{ item.label }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="p-inline-actions">
+  <a href="{% url 'portal:campaign_list' %}" class="p-btn p-btn-secondary">Campaigns</a>
+  <a href="{% url 'portal:coupon_list' %}" class="p-btn p-btn-secondary">Coupons</a>
+</div>
+{% endblock content %}

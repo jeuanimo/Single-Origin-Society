@@ -1,0 +1,34 @@
+{% extends "storefront/base.html" %}
+{% block title %}Payment · Single Origin Society{% endblock title %}
+{% block content %}
+<div class="page-hero">
+  <h1>Complete Payment</h1>
+</div>
+<section class="section">
+  <div class="container-narrow payment-center">
+    <p class="payment-order-info">Order {{ order.order_number }} — Total: ${{ order.total }}</p>
+    <div id="card-element" class="card-element-wrapper"></div>
+    <div id="card-errors" class="card-errors-msg"></div>
+    <button id="submit-btn" class="btn btn-gold btn-block">Pay ${{ order.total }}</button>
+  </div>
+</section>
+{% endblock content %}
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  const stripe = Stripe('{{ stripe_public_key }}');
+  const elements = stripe.elements();
+  const card = elements.create('card');
+  card.mount('#card-element');
+  document.getElementById('submit-btn').addEventListener('click', async () => {
+    const {error, paymentIntent} = await stripe.confirmCardPayment('{{ client_secret }}', {
+      payment_method: {card: card}
+    });
+    if (error) {
+      document.getElementById('card-errors').textContent = error.message;
+    } else if (paymentIntent.status === 'succeeded') {
+      window.location.href = '{% url "storefront:order_confirmation" order.order_number %}';
+    }
+  });
+</script>
+{% endblock extra_js %}

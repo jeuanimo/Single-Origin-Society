@@ -1,0 +1,71 @@
+{% extends "storefront/base.html" %}
+{% block title %}Cart · Single Origin Society{% endblock title %}
+{% block content %}
+<div class="page-hero">
+  <h1>Your Cart</h1>
+</div>
+<section class="section">
+  <div class="container">
+    {% if items %}
+    <table class="cart-table">
+      <thead>
+        <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Total</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>
+            <div class="cart-product">
+              {% if item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="80" height="80">{% endif %}
+              <div>
+                <strong>{{ item.product.name }}</strong>
+                {% if item.product.origin %}<br><span class="cart-origin">{{ item.product.origin }}</span>{% endif %}
+              </div>
+            </div>
+          </td>
+          <td>${{ item.product.price }}</td>
+          <td>
+            <form method="post" action="{% url 'storefront:cart_update' item.product.pk %}" class="cart-update-form">
+              {% csrf_token %}
+              <input type="number" name="quantity" value="{{ item.quantity }}" min="0" max="99" class="cart-quantity-input">
+              <button type="submit" class="btn btn-sm btn-outline">Update</button>
+            </form>
+          </td>
+          <td>${{ item.line_total }}</td>
+          <td>
+            <form method="post" action="{% url 'storefront:cart_remove' item.product.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm cart-remove-btn">×</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="cart-summary">
+      <form method="get" action="{% url 'storefront:checkout' %}" class="form-group">
+        <label for="id_promo_code">Promo Code</label>
+        <input id="id_promo_code" name="promo_code" value="{{ pricing.applied_promo_code }}" class="form-control" placeholder="Enter code">
+        <button type="submit" class="btn btn-outline btn-sm">Apply and Checkout</button>
+      </form>
+      <p class="cart-subtotal-label">Subtotal</p>
+      <p class="total">${{ subtotal }}</p>
+      {% if pricing.discount > 0 %}
+      <p class="cart-shipping-note">Discount: -${{ pricing.discount }}</p>
+      {% endif %}
+      <p class="cart-shipping-note">Estimated shipping: ${{ pricing.shipping_cost }}</p>
+      <p class="cart-shipping-note">Estimated tax: ${{ pricing.tax }}</p>
+      <p class="cart-subtotal-label">Estimated total: ${{ pricing.total }}</p>
+      <p class="cart-shipping-note">Shipping calculated at checkout</p>
+      <a href="{% url 'storefront:checkout' %}" class="btn btn-gold">Proceed to Checkout</a>
+    </div>
+    {% else %}
+    <div class="cart-empty">
+      <h3 class="cart-empty-title">Your cart is empty</h3>
+      <p class="cart-empty-text">Discover something exceptional.</p>
+      <a href="{% url 'storefront:shop' %}" class="btn btn-gold">Shop Now</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock content %}

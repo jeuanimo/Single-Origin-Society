@@ -1,0 +1,27 @@
+{% extends "portal/base.html" %}
+{% block title %}Suppliers{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Suppliers</h2>
+  <a href="{% url 'portal:supplier_new' %}" class="p-btn p-btn-primary">+ New Supplier</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead><tr><th>Name</th><th>Contact</th><th>Email</th><th>Phone</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for supplier in suppliers %}
+      <tr>
+        <td><strong>{{ supplier.name }}</strong></td>
+        <td>{{ supplier.contact_name|default:"—" }}</td>
+        <td>{{ supplier.email|default:"—" }}</td>
+        <td>{{ supplier.phone|default:"—" }}</td>
+        <td>{% if supplier.is_active %}<span class="badge badge-active">Active</span>{% else %}<span class="badge badge-draft">Inactive</span>{% endif %}</td>
+        <td class="actions"><a href="{% url 'portal:supplier_edit' supplier.pk %}" class="p-btn p-btn-secondary p-btn-sm">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="p-empty">No suppliers</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

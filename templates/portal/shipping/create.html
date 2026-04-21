@@ -1,0 +1,39 @@
+{% extends "portal/base.html" %}
+{% block title %}Create Shipment{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Create Shipment for {{ order.order_number }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="p-card">
+    <div class="p-form-group">
+      <label for="id_carrier">Carrier</label>
+      <select name="carrier" id="id_carrier" class="p-form-control" required>
+        <option value="usps">USPS</option>
+        <option value="ups">UPS</option>
+        <option value="fedex">FedEx</option>
+        <option value="dhl">DHL</option>
+      </select>
+    </div>
+    <div class="p-form-group">
+      <label for="id_tracking_number">Tracking Number</label>
+      <input type="text" name="tracking_number" id="id_tracking_number" class="p-form-control">
+    </div>
+    <div class="p-form-group">
+      <label for="id_status">Status</label>
+      <select name="status" id="id_status" class="p-form-control">
+        <option value="pending">Pending</option>
+        <option value="label_created">Label Created</option>
+        <option value="in_transit">In Transit</option>
+      </select>
+    </div>
+    <div class="p-form-group">
+      <label for="id_notes">Notes</label>
+      <textarea name="notes" id="id_notes" class="p-form-control" rows="3"></textarea>
+    </div>
+  </div>
+  <div class="p-form-actions">
+    <button type="submit" class="p-btn p-btn-primary">Create Shipment</button>
+    <a href="{% url 'portal:order_detail' order.pk %}" class="p-btn p-btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock content %}

@@ -1,0 +1,29 @@
+{% extends "portal/base.html" %}
+{% block title %}Coupons{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Coupons</h2>
+  <a href="{% url 'portal:coupon_new' %}" class="p-btn p-btn-primary p-btn-sm">New Coupon</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead><tr><th>Code</th><th>Type</th><th>Amount</th><th>Min Order</th><th>Uses / Max</th><th>Active</th><th>Expires</th><th></th></tr></thead>
+    <tbody>
+      {% for coupon in coupons %}
+      <tr>
+        <td><strong class="p-monospace">{{ coupon.code }}</strong></td>
+        <td>{{ coupon.get_discount_type_display }}</td>
+        <td>{% if coupon.discount_type == 'percent' %}{{ coupon.discount_value }}%{% else %}${{ coupon.discount_value }}{% endif %}</td>
+        <td>{% if coupon.min_order %}${{ coupon.min_order }}{% else %}—{% endif %}</td>
+        <td>{{ coupon.times_used }} / {{ coupon.max_uses|default:"∞" }}</td>
+        <td>{% if coupon.is_active %}<span class="badge badge-active">Active</span>{% else %}<span class="badge badge-draft">Inactive</span>{% endif %}</td>
+        <td>{{ coupon.valid_until|date:"M j, Y"|default:"—" }}</td>
+        <td class="actions"><a href="{% url 'portal:coupon_edit' coupon.pk %}" class="p-btn p-btn-secondary p-btn-sm">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="p-empty">No coupons</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

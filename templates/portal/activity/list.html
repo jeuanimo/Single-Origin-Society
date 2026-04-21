@@ -1,0 +1,38 @@
+{% extends "portal/base.html" %}
+{% block title %}Activity Log{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Activity Log</h2>
+  <form class="p-search" method="get">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search activity…" class="p-form-control p-search-input">
+  </form>
+</div>
+<div class="p-filters">
+  <a href="{% url 'portal:activity_log' %}" class="p-filter-btn {% if not current_action %}active{% endif %}">All</a>
+  <a href="?action=create" class="p-filter-btn {% if current_action == 'create' %}active{% endif %}">Created</a>
+  <a href="?action=update" class="p-filter-btn {% if current_action == 'update' %}active{% endif %}">Updated</a>
+  <a href="?action=status_change" class="p-filter-btn {% if current_action == 'status_change' %}active{% endif %}">Status Changes</a>
+  <a href="?action=note" class="p-filter-btn {% if current_action == 'note' %}active{% endif %}">Notes</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead>
+      <tr><th>User</th><th>Action</th><th>Entity</th><th>Description</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      {% for log in page_obj %}
+      <tr>
+        <td>{{ log.user.get_full_name|default:log.user.email }}</td>
+        <td><span class="badge badge-{{ log.action }}">{{ log.get_action_display }}</span></td>
+        <td><strong>{{ log.entity_type }}</strong> {{ log.entity_label }}</td>
+        <td>{{ log.description|truncatewords:12 }}</td>
+        <td>{{ log.created_at|date:"M j, Y g:i A" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="p-empty">No activity recorded yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

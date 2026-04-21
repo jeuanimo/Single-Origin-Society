@@ -1,0 +1,98 @@
+{% extends "portal/base.html" %}
+{% block title %}Ticket {{ ticket.ticket_number }}{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">{{ ticket.ticket_number }}: {{ ticket.subject }}</h2>
+  <span class="badge badge-{{ ticket.status }} p-badge-lg">{{ ticket.get_status_display }}</span>
+</div>
+
+<div class="p-grid-detail">
+  <div>
+    <div class="p-card">
+      <div class="p-card-header"><h2>Conversation</h2></div>
+      {% for msg in ticket_messages %}
+      <div class="p-ticket-msg {% if msg.is_staff_reply %}p-ticket-staff{% endif %}">
+        <div class="p-ticket-msg-meta">
+          <strong>{{ msg.author.get_full_name|default:msg.author.email }}</strong>
+          {% if msg.is_staff_reply %}<span class="badge badge-staff">Staff</span>{% endif %}
+          <span class="p-muted-ml">{{ msg.created_at|date:"M j, Y g:i A" }}</span>
+        </div>
+        <div class="p-ticket-msg-body">{{ msg.body|linebreaks }}</div>
+      </div>
+      {% empty %}
+      <p class="p-muted">No messages yet.</p>
+      {% endfor %}
+
+      <div class="p-ticket-reply">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="reply">
+          <textarea name="body" rows="4" class="p-form-control p-select-mb" placeholder="Write a reply…"></textarea>
+          <button type="submit" class="p-btn p-btn-primary">Send Reply</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="p-card">
+      <h3 class="p-section-title">Ticket Details</h3>
+      <div class="detail-item p-mb-12">
+        <span class="label">Customer</span>
+        <div class="value">
+          {% if ticket.user %}
+          <a href="{% url 'portal:customer_detail' ticket.user.pk %}">{{ ticket.user.get_full_name|default:ticket.email }}</a>
+          {% else %}
+          {{ ticket.email }}
+          {% endif %}
+        </div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Category</span>
+        <div class="value">{{ ticket.get_category_display }}</div>
+      </div>
+      {% if ticket.order %}
+      <div class="detail-item p-mb-12">
+        <span class="label">Order</span>
+        <div class="value"><a href="{% url 'portal:order_detail' ticket.order.pk %}">{{ ticket.order.order_number }}</a></div>
+      </div>
+      {% endif %}
+      <div class="detail-item p-mb-12">
+        <span class="label">Created</span>
+        <div class="value">{{ ticket.created_at|date:"M j, Y g:i A" }}</div>
+      </div>
+    </div>
+
+    <div class="p-card">
+      <h3 class="p-section-title">Update Ticket</h3>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update">
+        <label class="p-label" for="ticket-status">Status</label>
+        <select id="ticket-status" name="status" class="p-form-control p-select-mb">
+          <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Open</option>
+          <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+          <option value="waiting" {% if ticket.status == 'waiting' %}selected{% endif %}>Waiting on Customer</option>
+          <option value="resolved" {% if ticket.status == 'resolved' %}selected{% endif %}>Resolved</option>
+          <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Closed</option>
+        </select>
+        <label class="p-label" for="ticket-priority">Priority</label>
+        <select id="ticket-priority" name="priority" class="p-form-control p-select-mb">
+          <option value="low" {% if ticket.priority == 'low' %}selected{% endif %}>Low</option>
+          <option value="medium" {% if ticket.priority == 'medium' %}selected{% endif %}>Medium</option>
+          <option value="high" {% if ticket.priority == 'high' %}selected{% endif %}>High</option>
+          <option value="urgent" {% if ticket.priority == 'urgent' %}selected{% endif %}>Urgent</option>
+        </select>
+        <label class="p-label" for="ticket-assigned-to">Assign To</label>
+        <select id="ticket-assigned-to" name="assigned_to" class="p-form-control p-select-mb">
+          <option value="">Unassigned</option>
+          {% for member in staff_members %}
+          <option value="{{ member.pk }}" {% if ticket.assigned_to_id == member.pk %}selected{% endif %}>{{ member.get_full_name|default:member.email }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="p-btn p-btn-primary p-btn-full">Update Ticket</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

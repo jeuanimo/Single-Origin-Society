@@ -1,0 +1,32 @@
+{% extends "portal/base.html" %}
+{% block title %}Create Return — {{ order.order_number }}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Create Return for {{ order.order_number }}</h2>
+<div class="p-card p-form-card">
+  <form method="post">
+    {% csrf_token %}
+    <label class="p-label" for="return-item">Item (optional)</label>
+    <select id="return-item" name="item" class="p-form-control p-select-mb">
+      <option value="">— Entire order —</option>
+      {% for item in order.items.all %}
+      <option value="{{ item.pk }}">{{ item.product_name }} × {{ item.quantity }} (${{ item.total_price }})</option>
+      {% endfor %}
+    </select>
+    <label class="p-label" for="return-reason">Reason</label>
+    <select id="return-reason" name="reason" class="p-form-control p-select-mb">
+      <option value="defective">Defective Product</option>
+      <option value="wrong_item">Wrong Item Received</option>
+      <option value="not_as_described">Not As Described</option>
+      <option value="changed_mind">Changed Mind</option>
+      <option value="damaged">Damaged in Shipping</option>
+      <option value="other">Other</option>
+    </select>
+    <label class="p-label" for="return-description">Description</label>
+    <textarea id="return-description" name="description" rows="4" class="p-form-control p-select-mb" placeholder="Details about the return…"></textarea>
+    <div class="p-form-actions">
+      <button type="submit" class="p-btn p-btn-primary">Create Return</button>
+      <a href="{% url 'portal:order_detail' order.pk %}" class="p-btn p-btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}

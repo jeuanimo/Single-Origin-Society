@@ -1,0 +1,59 @@
+{% extends "portal/base.html" %}
+{% block title %}{% if variant %}Edit Variant{% else %}New Variant{% endif %}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">{% if variant %}Edit Variant{% else %}New Variant{% endif %} · {{ product.name }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="p-card">
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_name">Variant Name</label>
+        <input id="id_name" name="name" class="p-form-control" value="{{ variant.name|default:'' }}" required>
+      </div>
+      <div class="p-form-group">
+        <label for="id_sku">SKU</label>
+        <input id="id_sku" name="sku" class="p-form-control" value="{{ variant.sku|default:'' }}">
+      </div>
+    </div>
+
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_size">Size</label>
+        <input id="id_size" name="size" class="p-form-control" value="{{ variant.size|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_grind">Grind</label>
+        <input id="id_grind" name="grind" class="p-form-control" value="{{ variant.grind|default:'' }}">
+      </div>
+    </div>
+
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_price">Price</label>
+        <input type="number" step="0.01" id="id_price" name="price" class="p-form-control" value="{{ variant.price|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_compare_price">Compare Price</label>
+        <input type="number" step="0.01" id="id_compare_price" name="compare_price" class="p-form-control" value="{{ variant.compare_price|default:'' }}">
+      </div>
+    </div>
+
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_sort_order">Sort Order</label>
+        <input type="number" id="id_sort_order" name="sort_order" class="p-form-control" value="{{ variant.sort_order|default:0 }}">
+      </div>
+      <div class="p-form-check p-align-end">
+        <input type="checkbox" id="id_is_active" name="is_active" {% if variant.is_active or not variant %}checked{% endif %}>
+        <label for="id_is_active" class="p-check-label">Active</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-form-actions">
+    <button type="submit" class="p-btn p-btn-primary">Save Variant</button>
+    <a href="{% url 'portal:product_variants' product.pk %}" class="p-btn p-btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock content %}

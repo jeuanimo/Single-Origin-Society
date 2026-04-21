@@ -1,0 +1,54 @@
+{% extends "portal/base.html" %}
+{% block title %}{% if coupon %}Edit Coupon{% else %}New Coupon{% endif %}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">{% if coupon %}Edit Coupon{% else %}New Coupon{% endif %}</h2>
+<div class="p-card p-form-card">
+  <form method="post">
+    {% csrf_token %}
+    <label class="p-label" for="coupon-code">Code</label>
+    <input id="coupon-code" type="text" name="code" value="{{ coupon.code|default:'' }}" class="p-form-control p-select-mb" required>
+    <label class="p-label" for="coupon-description">Description</label>
+    <input id="coupon-description" type="text" name="description" value="{{ coupon.description|default:'' }}" class="p-form-control p-select-mb">
+    <div class="p-form-row">
+      <div>
+        <label class="p-label" for="coupon-discount-type">Discount Type</label>
+        <select id="coupon-discount-type" name="discount_type" class="p-form-control p-select-mb">
+          <option value="percent" {% if coupon.discount_type == 'percent' %}selected{% endif %}>Percent</option>
+          <option value="fixed" {% if coupon.discount_type == 'fixed' %}selected{% endif %}>Fixed Amount</option>
+        </select>
+      </div>
+      <div>
+        <label class="p-label" for="coupon-discount-value">Discount Value</label>
+        <input id="coupon-discount-value" type="number" name="discount_value" step="0.01" value="{{ coupon.discount_value|default:'0' }}" class="p-form-control p-select-mb" required>
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div>
+        <label class="p-label" for="coupon-min-order">Min Order ($)</label>
+        <input id="coupon-min-order" type="number" name="min_order" step="0.01" value="{{ coupon.min_order|default:'0' }}" class="p-form-control p-select-mb">
+      </div>
+      <div>
+        <label class="p-label" for="coupon-max-uses">Max Uses</label>
+        <input id="coupon-max-uses" type="number" name="max_uses" value="{{ coupon.max_uses|default:'' }}" class="p-form-control p-select-mb" placeholder="Unlimited">
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div>
+        <label class="p-label" for="coupon-valid-from">Valid From</label>
+        <input id="coupon-valid-from" type="datetime-local" name="valid_from" value="{{ coupon.valid_from|date:'Y-m-d\TH:i' }}" class="p-form-control p-select-mb" required>
+      </div>
+      <div>
+        <label class="p-label" for="coupon-valid-until">Valid Until</label>
+        <input id="coupon-valid-until" type="datetime-local" name="valid_until" value="{{ coupon.valid_until|date:'Y-m-d\TH:i' }}" class="p-form-control p-select-mb" required>
+      </div>
+    </div>
+    <label class="p-checkbox">
+      <input type="checkbox" name="is_active" {% if coupon.is_active or not coupon %}checked{% endif %}> Active
+    </label>
+    <div class="p-form-actions">
+      <button type="submit" class="p-btn p-btn-primary">Save Coupon</button>
+      <a href="{% url 'portal:coupon_list' %}" class="p-btn p-btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}

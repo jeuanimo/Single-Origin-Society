@@ -1,0 +1,75 @@
+{% extends "portal/base.html" %}
+{% block title %}Return {{ ret.return_number }}{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Return {{ ret.return_number }}</h2>
+  <span class="badge badge-{{ ret.status }} p-badge-lg">{{ ret.get_status_display }}</span>
+</div>
+
+<div class="p-grid-detail">
+  <div>
+    <div class="p-card">
+      <div class="p-card-header"><h2>Return Details</h2></div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Order</span>
+        <div class="value"><a href="{% url 'portal:order_detail' ret.order.pk %}">{{ ret.order.order_number }}</a></div>
+      </div>
+      {% if ret.item %}
+      <div class="detail-item p-mb-12">
+        <span class="label">Item</span>
+        <div class="value">{{ ret.item.product_name }} × {{ ret.item.quantity }}</div>
+      </div>
+      {% endif %}
+      <div class="detail-item p-mb-12">
+        <span class="label">Reason</span>
+        <div class="value">{{ ret.get_reason_display }}</div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Description</span>
+        <div class="value">{{ ret.description|default:"—" }}</div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Refund Amount</span>
+        <div class="value">${{ ret.refund_amount }}</div>
+      </div>
+      {% if ret.resolution_notes %}
+      <div class="detail-item p-mb-12">
+        <span class="label">Resolution Notes</span>
+        <div class="value">{{ ret.resolution_notes }}</div>
+      </div>
+      {% endif %}
+      <div class="detail-item p-mb-12">
+        <span class="label">Processed By</span>
+        <div class="value">{{ ret.processed_by.get_full_name|default:"—" }}</div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Created</span>
+        <div class="value">{{ ret.created_at|date:"M j, Y g:i A" }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="p-card">
+      <h3 class="p-section-title">Update Return</h3>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_status">
+        <label class="p-label" for="return-status">Status</label>
+        <select id="return-status" name="status" class="p-form-control p-select-mb">
+          <option value="requested" {% if ret.status == 'requested' %}selected{% endif %}>Requested</option>
+          <option value="approved" {% if ret.status == 'approved' %}selected{% endif %}>Approved</option>
+          <option value="received" {% if ret.status == 'received' %}selected{% endif %}>Item Received</option>
+          <option value="refunded" {% if ret.status == 'refunded' %}selected{% endif %}>Refunded</option>
+          <option value="denied" {% if ret.status == 'denied' %}selected{% endif %}>Denied</option>
+        </select>
+        <label class="p-label" for="return-refund-amount">Refund Amount</label>
+        <input id="return-refund-amount" type="number" name="refund_amount" step="0.01" value="{{ ret.refund_amount }}" class="p-form-control p-select-mb">
+        <label class="p-label" for="return-resolution-notes">Resolution Notes</label>
+        <textarea id="return-resolution-notes" name="resolution_notes" rows="3" class="p-form-control p-select-mb">{{ ret.resolution_notes }}</textarea>
+        <button type="submit" class="p-btn p-btn-primary p-btn-full">Update Return</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

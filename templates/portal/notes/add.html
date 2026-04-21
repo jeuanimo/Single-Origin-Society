@@ -1,0 +1,25 @@
+{% extends "portal/base.html" %}
+{% block title %}Add Note{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Add Internal Note</h2>
+<div class="p-card p-form-card">
+  <form method="post">
+    {% csrf_token %}
+    <label class="p-label" for="note-customer">Customer</label>
+    <select id="note-customer" name="customer" class="p-form-control p-select-mb" required>
+      <option value="">— Select Customer —</option>
+      {% for customer in customers %}
+      <option value="{{ customer.pk }}">{{ customer.get_full_name|default:customer.email }}</option>
+      {% endfor %}
+    </select>
+    <label class="p-label" for="note-subject">Subject</label>
+    <input id="note-subject" type="text" name="subject" class="p-form-control p-select-mb" required>
+    <label class="p-label" for="note-body">Note</label>
+    <textarea id="note-body" name="body" rows="6" class="p-form-control p-select-mb" required></textarea>
+    <div class="p-form-actions">
+      <button type="submit" class="p-btn p-btn-primary">Save Note</button>
+      <a href="{% url 'portal:notes_list' %}" class="p-btn p-btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends "portal/base.html" %}
+{% block title %}{% if po %}Edit PO{% else %}New Purchase Order{% endif %}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">{% if po %}Edit: {{ po.po_number }}{% else %}New Purchase Order{% endif %}</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="p-card">
+    <div class="p-form-row">
+      <div class="p-form-group"><label for="id_po_number">PO Number</label><input type="text" name="po_number" id="id_po_number" class="p-form-control" value="{{ po.po_number|default:'' }}" required></div>
+      <div class="p-form-group">
+        <label for="id_supplier">Supplier</label>
+        <select name="supplier" id="id_supplier" class="p-form-control" required>
+          <option value="">Select...</option>
+          {% for s in suppliers %}<option value="{{ s.pk }}" {% if po.supplier_id == s.pk %}selected{% endif %}>{{ s.name }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_status">Status</label>
+        <select name="status" id="id_status" class="p-form-control">
+          <option value="draft" {% if po.status == 'draft' %}selected{% endif %}>Draft</option>
+          <option value="submitted" {% if po.status == 'submitted' %}selected{% endif %}>Submitted</option>
+          <option value="confirmed" {% if po.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+          <option value="received" {% if po.status == 'received' %}selected{% endif %}>Received</option>
+          <option value="cancelled" {% if po.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+      </div>
+      <div class="p-form-group"><label for="id_expected_date">Expected Date</label><input type="date" name="expected_date" id="id_expected_date" class="p-form-control" value="{{ po.expected_date|date:'Y-m-d'|default:'' }}"></div>
+    </div>
+    <div class="p-form-group"><label for="id_notes">Notes</label><textarea name="notes" id="id_notes" class="p-form-control" rows="3">{{ po.notes|default:'' }}</textarea></div>
+  </div>
+  <div class="p-form-actions">
+    <button type="submit" class="p-btn p-btn-primary">Save</button>
+    <a href="{% url 'portal:purchase_order_list' %}" class="p-btn p-btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock content %}

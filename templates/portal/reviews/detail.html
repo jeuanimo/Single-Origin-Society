@@ -1,0 +1,49 @@
+{% extends "portal/base.html" %}
+{% block title %}Review — {{ review.product.name }}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Review: {{ review.product.name }}</h2>
+
+<div class="p-grid-detail">
+  <div>
+    <div class="p-card">
+      <div class="p-card-header">
+        <h2>{{ review.title }}</h2>
+        <span class="badge badge-{{ review.status }}">{{ review.get_status_display }}</span>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Rating</span>
+        <div class="value">{{ review.rating }}★</div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Customer</span>
+        <div class="value">{{ review.user.get_full_name }} ({{ review.user.email }})</div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Verified Purchase</span>
+        <div class="value">{% if review.is_verified_purchase %}Yes{% else %}No{% endif %}</div>
+      </div>
+      <div class="detail-item p-mb-12">
+        <span class="label">Date</span>
+        <div class="value">{{ review.created_at|date:"M j, Y g:i A" }}</div>
+      </div>
+      <div class="p-review-body">{{ review.body }}</div>
+    </div>
+  </div>
+
+  <div>
+    <div class="p-card">
+      <h3 class="p-section-title">Moderate</h3>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="approve">
+        <button type="submit" class="p-btn p-btn-primary p-btn-full p-select-mb">Approve</button>
+      </form>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="reject">
+        <button type="submit" class="p-btn p-btn-danger p-btn-full">Reject</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

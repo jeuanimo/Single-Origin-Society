@@ -1,0 +1,97 @@
+{% extends "portal/base.html" %}
+{% load humanize %}
+{% block title %}Dashboard{% endblock title %}
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Revenue Today</div>
+    <div class="stat-value gold">${{ stats.revenue_today|floatformat:2|intcomma }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Revenue Week</div>
+    <div class="stat-value">${{ stats.revenue_week|floatformat:2|intcomma }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Revenue Month</div>
+    <div class="stat-value">${{ stats.revenue_month|floatformat:2|intcomma }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Orders Today / Week / Month</div>
+    <div class="stat-value">{{ stats.orders_today }} / {{ stats.orders_week }} / {{ stats.orders_month }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Average Order Value</div>
+    <div class="stat-value">${{ stats.avg_order_value|floatformat:2|intcomma }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Pending Shipments</div>
+    <div class="stat-value">{{ stats.pending_shipments }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Fundraising Performance</div>
+    <div class="stat-value">{{ stats.fundraising_percent }}%</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Customer Growth (30d)</div>
+    <div class="stat-value">{{ stats.customer_growth_month|intcomma }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Abandoned Cart</div>
+    <div class="stat-value">{{ stats.abandoned_cart_placeholder }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Content Performance</div>
+    <div class="stat-value">{{ stats.content_performance_placeholder }}</div>
+  </div>
+</div>
+
+<div class="p-grid-2col p-mb-24">
+  <div class="p-card">
+    <div class="p-card-header"><h2>Top Products</h2></div>
+    <table class="p-table">
+      <thead><tr><th>Product</th><th>Qty</th><th>Revenue</th></tr></thead>
+      <tbody>
+        {% for p in stats.top_products %}
+        <tr><td>{{ p.product_name }}</td><td>{{ p.total_qty }}</td><td>${{ p.total_rev|floatformat:2 }}</td></tr>
+        {% empty %}
+        <tr><td colspan="3" class="p-empty">No sales data</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="p-card">
+    <div class="p-card-header"><h2>Low Stock Alerts</h2></div>
+    {% for stock in stats.low_stock %}
+    <div class="p-list-row-sm"><strong>{{ stock.product.name }}</strong> <span class="badge badge-low">{{ stock.available }} available</span></div>
+    {% empty %}
+    <p class="p-muted">No low stock alerts</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="p-card">
+  <div class="p-card-header">
+    <h2>Recent Orders</h2>
+    <a href="{% url 'portal:order_list' %}" class="p-btn p-btn-secondary p-btn-sm">View All</a>
+  </div>
+  <table class="p-table">
+    <thead>
+      <tr><th>Order</th><th>Customer</th><th>Status</th><th>Total</th><th>Date</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for order in recent_orders %}
+      <tr>
+        <td><strong>{{ order.order_number }}</strong></td>
+        <td>{{ order.first_name }} {{ order.last_name }}</td>
+        <td><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+        <td>${{ order.total }}</td>
+        <td>{{ order.created_at|date:"M j, Y" }}</td>
+        <td class="actions"><a href="{% url 'portal:order_detail' order.pk %}" class="p-btn p-btn-secondary p-btn-sm">View</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="p-empty">No orders yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

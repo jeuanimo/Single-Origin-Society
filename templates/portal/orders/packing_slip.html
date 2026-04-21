@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Packing slip for order fulfillment.">
+  <meta name="keywords" content="packing slip, order, fulfillment">
+  <title>Packing Slip {{ order.order_number }}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; color: #222; }
+    h1 { margin-bottom: 4px; }
+    .muted { color: #666; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #f6f6f6; }
+    .totals { margin-top: 16px; text-align: right; }
+  </style>
+</head>
+<body>
+  <h1>Single Origin Society</h1>
+  <div class="muted">Packing Slip · {{ order.order_number }}</div>
+  <p>
+    <strong>Ship To:</strong><br>
+    {{ order.first_name }} {{ order.last_name }}<br>
+    {{ order.shipping_line1 }}<br>
+    {% if order.shipping_line2 %}{{ order.shipping_line2 }}<br>{% endif %}
+    {{ order.shipping_city }}, {{ order.shipping_state }} {{ order.shipping_postal }}<br>
+    {{ order.shipping_country }}
+  </p>
+  <table>
+    <thead><tr><th>Item</th><th>SKU</th><th>Qty</th></tr></thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr><td>{{ item.product_name }}</td><td>{{ item.product_sku }}</td><td>{{ item.quantity }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="totals">
+    <div><strong>Total:</strong> ${{ order.total }}</div>
+  </div>
+</body>
+</html>

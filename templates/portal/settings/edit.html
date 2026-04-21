@@ -1,0 +1,79 @@
+{% extends "portal/base.html" %}
+{% block title %}Business Settings{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Business Settings</h2>
+<div class="p-card p-form-card">
+  <form method="post">
+    {% csrf_token %}
+    <h3 class="p-section-title">Store Information</h3>
+    <label class="p-label" for="settings-store-name">Store Name</label>
+    <input id="settings-store-name" type="text" name="store_name" value="{{ settings_obj.store_name }}" class="p-form-control p-select-mb" required>
+    <label class="p-label" for="settings-tagline">Tagline</label>
+    <input id="settings-tagline" type="text" name="tagline" value="{{ settings_obj.tagline }}" class="p-form-control p-select-mb">
+    <div class="p-form-row">
+      <div>
+        <label class="p-label" for="settings-email">Email</label>
+        <input id="settings-email" type="email" name="email" value="{{ settings_obj.email }}" class="p-form-control p-select-mb" required>
+      </div>
+      <div>
+        <label class="p-label" for="settings-phone">Phone</label>
+        <input id="settings-phone" type="text" name="phone" value="{{ settings_obj.phone }}" class="p-form-control p-select-mb">
+      </div>
+    </div>
+
+    <h3 class="p-section-title">Address</h3>
+    <label class="p-label" for="settings-address-line1">Address Line 1</label>
+    <input id="settings-address-line1" type="text" name="address_line1" value="{{ settings_obj.address_line1 }}" class="p-form-control p-select-mb">
+    <label class="p-label" for="settings-address-line2">Address Line 2</label>
+    <input id="settings-address-line2" type="text" name="address_line2" value="{{ settings_obj.address_line2 }}" class="p-form-control p-select-mb">
+    <div class="p-form-row">
+      <div>
+        <label class="p-label" for="settings-city">City</label>
+        <input id="settings-city" type="text" name="city" value="{{ settings_obj.city }}" class="p-form-control p-select-mb">
+      </div>
+      <div>
+        <label class="p-label" for="settings-state">State</label>
+        <input id="settings-state" type="text" name="state" value="{{ settings_obj.state }}" class="p-form-control p-select-mb">
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div>
+        <label class="p-label" for="settings-postal-code">Postal Code</label>
+        <input id="settings-postal-code" type="text" name="postal_code" value="{{ settings_obj.postal_code }}" class="p-form-control p-select-mb">
+      </div>
+      <div>
+        <label class="p-label" for="settings-country">Country</label>
+        <input id="settings-country" type="text" name="country" value="{{ settings_obj.country }}" class="p-form-control p-select-mb">
+      </div>
+    </div>
+
+    <h3 class="p-section-title">Commerce</h3>
+    <div class="p-form-row">
+      <div>
+        <label class="p-label" for="settings-currency">Currency</label>
+        <input id="settings-currency" type="text" name="currency" value="{{ settings_obj.currency }}" maxlength="3" class="p-form-control p-select-mb">
+      </div>
+      <div>
+        <label class="p-label" for="settings-tax-rate">Tax Rate</label>
+        <input id="settings-tax-rate" type="number" name="tax_rate" step="0.0001" value="{{ settings_obj.tax_rate }}" class="p-form-control p-select-mb">
+      </div>
+      <div>
+        <label class="p-label" for="settings-free-shipping-threshold">Free Shipping Threshold ($)</label>
+        <input id="settings-free-shipping-threshold" type="number" name="free_shipping_threshold" step="0.01" value="{{ settings_obj.free_shipping_threshold }}" class="p-form-control p-select-mb">
+      </div>
+    </div>
+
+    <h3 class="p-section-title">Social Links</h3>
+    <label class="p-label" for="settings-instagram-url">Instagram URL</label>
+    <input id="settings-instagram-url" type="url" name="instagram_url" value="{{ settings_obj.instagram_url }}" class="p-form-control p-select-mb" placeholder="https://instagram.com/…">
+    <label class="p-label" for="settings-facebook-url">Facebook URL</label>
+    <input id="settings-facebook-url" type="url" name="facebook_url" value="{{ settings_obj.facebook_url }}" class="p-form-control p-select-mb" placeholder="https://facebook.com/…">
+    <label class="p-label" for="settings-twitter-url">Twitter / X URL</label>
+    <input id="settings-twitter-url" type="url" name="twitter_url" value="{{ settings_obj.twitter_url }}" class="p-form-control p-select-mb" placeholder="https://x.com/…">
+
+    <div class="p-form-actions">
+      <button type="submit" class="p-btn p-btn-primary">Save Settings</button>
+    </div>
+  </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,31 @@
+{% extends "portal/base.html" %}
+{% block title %}Shipments{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Shipments</h2>
+<div class="p-filters">
+  <a href="{% url 'portal:shipment_list' %}" class="p-filter-btn {% if not current_status %}active{% endif %}">All</a>
+  <a href="?status=pending" class="p-filter-btn {% if current_status == 'pending' %}active{% endif %}">Pending</a>
+  <a href="?status=label_created" class="p-filter-btn {% if current_status == 'label_created' %}active{% endif %}">Label Created</a>
+  <a href="?status=in_transit" class="p-filter-btn {% if current_status == 'in_transit' %}active{% endif %}">In Transit</a>
+  <a href="?status=delivered" class="p-filter-btn {% if current_status == 'delivered' %}active{% endif %}">Delivered</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead><tr><th>Order</th><th>Carrier</th><th>Tracking</th><th>Status</th><th>Created</th></tr></thead>
+    <tbody>
+      {% for shipment in page_obj %}
+      <tr>
+        <td><strong><a href="{% url 'portal:order_detail' shipment.order.pk %}">{{ shipment.order.order_number }}</a></strong></td>
+        <td>{{ shipment.get_carrier_display }}</td>
+        <td>{{ shipment.tracking_number|default:"—" }}</td>
+        <td><span class="badge badge-{{ shipment.status }}">{{ shipment.get_status_display }}</span></td>
+        <td>{{ shipment.created_at|date:"M j, Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="p-empty">No shipments</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

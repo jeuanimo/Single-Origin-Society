@@ -1,0 +1,29 @@
+{% extends "portal/base.html" %}
+{% block title %}Campaigns{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Marketing Campaigns</h2>
+  <a href="{% url 'portal:campaign_new' %}" class="p-btn p-btn-primary">+ New Campaign</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead><tr><th>Name</th><th>Channel</th><th>Status</th><th>Budget</th><th>Spend</th><th>Start</th><th>End</th><th></th></tr></thead>
+    <tbody>
+      {% for campaign in campaigns %}
+      <tr>
+        <td><strong>{{ campaign.name }}</strong></td>
+        <td>{{ campaign.get_channel_display }}</td>
+        <td><span class="badge badge-{{ campaign.status }}">{{ campaign.get_status_display }}</span></td>
+        <td>${{ campaign.budget }}</td>
+        <td>${{ campaign.spend }}</td>
+        <td>{{ campaign.start_date|date:"M j" }}</td>
+        <td>{{ campaign.end_date|date:"M j"|default:"—" }}</td>
+        <td class="actions"><a href="{% url 'portal:campaign_edit' campaign.pk %}" class="p-btn p-btn-secondary p-btn-sm">Edit</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="p-empty">No campaigns</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

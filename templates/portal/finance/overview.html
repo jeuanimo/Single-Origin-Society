@@ -1,0 +1,54 @@
+{% extends "portal/base.html" %}
+{% block title %}Finance{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Finance Overview</h2>
+  <a href="{% url 'portal:expense_add' %}" class="p-btn p-btn-primary">+ Add Expense</a>
+</div>
+
+<div class="p-stat-grid">
+  <div class="p-stat-card"><div class="p-stat-label">Income (30d)</div><div class="p-stat-value p-color-income">${{ total_income }}</div></div>
+  <div class="p-stat-card"><div class="p-stat-label">Expenses (30d)</div><div class="p-stat-value p-color-expense">${{ total_expenses }}</div></div>
+  <div class="p-stat-card"><div class="p-stat-label">Net Profit (30d)</div><div class="p-stat-value">${{ net_profit }}</div></div>
+</div>
+
+<div class="p-grid-2col">
+  <div class="p-card">
+    <div class="p-card-header"><h2>Recent Transactions</h2></div>
+    <table class="p-table">
+      <thead><tr><th>Type</th><th>Description</th><th>Amount</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for txn in recent_transactions %}
+        <tr>
+          <td><span class="badge badge-{{ txn.transaction_type }}">{{ txn.get_transaction_type_display }}</span></td>
+          <td>{{ txn.description|truncatewords:8 }}</td>
+          <td>{% if txn.transaction_type == 'refund' or txn.transaction_type == 'expense' %}<span class="p-color-expense">-${{ txn.amount }}</span>{% else %}<span class="p-color-income">+${{ txn.amount }}</span>{% endif %}</td>
+          <td>{{ txn.created_at|date:"M j" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="p-empty-md">No transactions</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="p-card">
+    <div class="p-card-header"><h2>Recent Expenses</h2></div>
+    <table class="p-table">
+      <thead><tr><th>Category</th><th>Description</th><th>Amount</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for exp in recent_expenses %}
+        <tr>
+          <td>{{ exp.get_category_display }}</td>
+          <td>{{ exp.description|truncatewords:6 }}</td>
+          <td>${{ exp.amount }}</td>
+          <td>{{ exp.date|date:"M j" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="p-empty-md">No expenses</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock content %}

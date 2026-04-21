@@ -1,0 +1,145 @@
+{% extends "portal/base.html" %}
+{% block title %}{% if product %}Edit Product{% else %}New Product{% endif %}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">{% if product %}Edit: {{ product.name }}{% else %}New Product{% endif %}</h2>
+{% if product %}
+<p class="p-mb-16"><a href="{% url 'portal:product_variants' product.pk %}" class="p-btn p-btn-secondary p-btn-sm">Manage Variants</a></p>
+{% endif %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="p-card">
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_name">Product Name</label>
+        <input type="text" name="name" id="id_name" class="p-form-control" value="{{ product.name|default:'' }}" required>
+      </div>
+      <div class="p-form-group">
+        <label for="id_sku">SKU</label>
+        <input type="text" name="sku" id="id_sku" class="p-form-control" value="{{ product.sku|default:'' }}" required>
+      </div>
+    </div>
+    <div class="p-form-group">
+      <label for="id_category">Category</label>
+      <select name="category" id="id_category" class="p-form-control" required>
+        <option value="">Select category...</option>
+        {% for cat in categories %}
+        <option value="{{ cat.pk }}" {% if product.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="p-form-group">
+      <label for="id_short_description">Short Description</label>
+      <input type="text" name="short_description" id="id_short_description" class="p-form-control" value="{{ product.short_description|default:'' }}">
+    </div>
+    <div class="p-form-group">
+      <label for="id_description">Full Description</label>
+      <textarea name="description" id="id_description" class="p-form-control" rows="5">{{ product.description|default:'' }}</textarea>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_price">Price</label>
+        <input type="number" step="0.01" name="price" id="id_price" class="p-form-control" value="{{ product.price|default:'' }}" required>
+      </div>
+      <div class="p-form-group">
+        <label for="id_compare_price">Compare Price</label>
+        <input type="number" step="0.01" name="compare_price" id="id_compare_price" class="p-form-control" value="{{ product.compare_price|default:'' }}">
+      </div>
+    </div>
+    <div class="p-form-group">
+      <label for="id_cost">Cost</label>
+      <input type="number" step="0.01" name="cost" id="id_cost" class="p-form-control" value="{{ product.cost|default:'' }}">
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_origin">Origin</label>
+        <input type="text" name="origin" id="id_origin" class="p-form-control" value="{{ product.origin|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_blend_info">Blend Info</label>
+        <input type="text" name="blend_info" id="id_blend_info" class="p-form-control" value="{{ product.blend_info|default:'' }}">
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_roast_level">Roast Level</label>
+        <input type="text" name="roast_level" id="id_roast_level" class="p-form-control" value="{{ product.roast_level|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_flavor_notes">Flavor Notes</label>
+        <input type="text" name="flavor_notes" id="id_flavor_notes" class="p-form-control" value="{{ product.flavor_notes|default:'' }}">
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_aroma_profile">Aroma</label>
+        <input type="text" name="aroma_profile" id="id_aroma_profile" class="p-form-control" value="{{ product.aroma_profile|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_body_profile">Body</label>
+        <input type="text" name="body_profile" id="id_body_profile" class="p-form-control" value="{{ product.body_profile|default:'' }}">
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_acidity_profile">Acidity</label>
+        <input type="text" name="acidity_profile" id="id_acidity_profile" class="p-form-control" value="{{ product.acidity_profile|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_finish_profile">Finish</label>
+        <input type="text" name="finish_profile" id="id_finish_profile" class="p-form-control" value="{{ product.finish_profile|default:'' }}">
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_available_sizes">Available Sizes</label>
+        <input type="text" name="available_sizes" id="id_available_sizes" class="p-form-control" value="{{ product.available_sizes|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_grind_options">Grind Options</label>
+        <input type="text" name="grind_options" id="id_grind_options" class="p-form-control" value="{{ product.grind_options|default:'' }}">
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_tags">Tags</label>
+        <input type="text" name="tags" id="id_tags" class="p-form-control" value="{{ product.tags|default:'' }}">
+      </div>
+      <div class="p-form-group">
+        <label for="id_weight">Weight</label>
+        <input type="text" name="weight" id="id_weight" class="p-form-control" value="{{ product.weight|default:'' }}">
+      </div>
+    </div>
+    <div class="p-form-group">
+      <label for="id_steeping_notes">Steeping Notes</label>
+      <textarea name="steeping_notes" id="id_steeping_notes" class="p-form-control" rows="3">{{ product.steeping_notes|default:'' }}</textarea>
+    </div>
+    <div class="p-form-group">
+      <label for="id_ritual_description">Ritual Description</label>
+      <textarea name="ritual_description" id="id_ritual_description" class="p-form-control" rows="3">{{ product.ritual_description|default:'' }}</textarea>
+    </div>
+    <div class="p-form-group">
+      <label for="id_image">Product Image</label>
+      <input type="file" name="image" id="id_image" class="p-form-control" accept="image/*">
+      {% if product.image %}<p class="p-image-current">Current: {{ product.image.name }}</p>{% endif %}
+    </div>
+    <div class="p-check-group">
+      <div class="p-form-check">
+        <input type="checkbox" name="is_active" id="is_active" {% if product.is_active or not product %}checked{% endif %}>
+        <label for="is_active" class="p-check-label">Active</label>
+      </div>
+      <div class="p-form-check">
+        <input type="checkbox" name="is_featured" id="is_featured" {% if product.is_featured %}checked{% endif %}>
+        <label for="is_featured" class="p-check-label">Featured</label>
+      </div>
+      <div class="p-form-check">
+        <input type="checkbox" name="is_subscription_available" id="is_subscription_available" {% if product.is_subscription_available %}checked{% endif %}>
+        <label for="is_subscription_available" class="p-check-label">Subscription Available</label>
+      </div>
+    </div>
+  </div>
+  <div class="p-form-actions">
+    <button type="submit" class="p-btn p-btn-primary">Save Product</button>
+    <a href="{% url 'portal:product_list' %}" class="p-btn p-btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock content %}

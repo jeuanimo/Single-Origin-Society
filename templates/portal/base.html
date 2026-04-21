@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Single Origin Society — Business operations portal.">
+  <meta name="keywords" content="portal, operations, inventory, orders">
+  <title>{% block title %}Portal{% endblock title %} · SOS Portal</title>
+  <link rel="icon" type="image/png" href="{% static 'images/soslogo.png' %}">
+  <link rel="shortcut icon" type="image/png" href="{% static 'images/soslogo.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/portal.css' %}">
+</head>
+<body class="portal-body">
+  <div class="portal-layout">
+    {% include "portal/includes/sidebar.html" %}
+    <div class="portal-main">
+      {% include "portal/includes/topbar.html" %}
+      {% if messages %}
+      <div class="portal-messages">
+        {% for message in messages %}
+        <div class="p-message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <div class="portal-content">
+        <div class="portal-page-shell">
+          {% block content %}{% endblock content %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends "portal/base.html" %}
+{% block title %}Orders{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Orders</h2>
+<div class="p-filters">
+  <a href="{% url 'portal:order_list' %}" class="p-filter-btn {% if not current_status %}active{% endif %}">All</a>
+  <a href="?status=pending" class="p-filter-btn {% if current_status == 'pending' %}active{% endif %}">Pending</a>
+  <a href="?status=confirmed" class="p-filter-btn {% if current_status == 'confirmed' %}active{% endif %}">Confirmed</a>
+  <a href="?status=processing" class="p-filter-btn {% if current_status == 'processing' %}active{% endif %}">Processing</a>
+  <a href="?status=shipped" class="p-filter-btn {% if current_status == 'shipped' %}active{% endif %}">Shipped</a>
+  <a href="?status=delivered" class="p-filter-btn {% if current_status == 'delivered' %}active{% endif %}">Delivered</a>
+</div>
+<div class="p-search-bar">
+  <form method="get" class="p-search-form">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search by order #, email, or name..." class="p-search-input">
+    <button type="submit" class="p-btn p-btn-secondary">Search</button>
+  </form>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead>
+      <tr><th>Order</th><th>Customer</th><th>Email</th><th>Status</th><th>Total</th><th>Date</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for order in page_obj %}
+      <tr>
+        <td><strong>{{ order.order_number }}</strong></td>
+        <td>{{ order.first_name }} {{ order.last_name }}</td>
+        <td>{{ order.email }}</td>
+        <td><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+        <td>${{ order.total }}</td>
+        <td>{{ order.created_at|date:"M j, Y" }}</td>
+        <td class="actions"><a href="{% url 'portal:order_detail' order.pk %}" class="p-btn p-btn-secondary p-btn-sm">View</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="p-empty">No orders found</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

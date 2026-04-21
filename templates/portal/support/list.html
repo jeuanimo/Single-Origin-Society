@@ -1,0 +1,41 @@
+{% extends "portal/base.html" %}
+{% block title %}Support Tickets{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Support Tickets</h2>
+  <form class="p-search" method="get">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search tickets…" class="p-form-control p-search-input">
+  </form>
+</div>
+<div class="p-filters">
+  <a href="{% url 'portal:support_ticket_list' %}" class="p-filter-btn {% if not current_status %}active{% endif %}">All</a>
+  <a href="?status=open" class="p-filter-btn {% if current_status == 'open' %}active{% endif %}">Open</a>
+  <a href="?status=in_progress" class="p-filter-btn {% if current_status == 'in_progress' %}active{% endif %}">In Progress</a>
+  <a href="?status=waiting" class="p-filter-btn {% if current_status == 'waiting' %}active{% endif %}">Waiting</a>
+  <a href="?status=resolved" class="p-filter-btn {% if current_status == 'resolved' %}active{% endif %}">Resolved</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead>
+      <tr><th>Ticket</th><th>Subject</th><th>Category</th><th>Priority</th><th>Status</th><th>Assigned</th><th>Date</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for ticket in page_obj %}
+      <tr>
+        <td><strong>{{ ticket.ticket_number }}</strong></td>
+        <td>{{ ticket.subject|truncatewords:8 }}</td>
+        <td>{{ ticket.get_category_display }}</td>
+        <td><span class="badge badge-{{ ticket.priority }}">{{ ticket.get_priority_display }}</span></td>
+        <td><span class="badge badge-{{ ticket.status }}">{{ ticket.get_status_display }}</span></td>
+        <td>{{ ticket.assigned_to.get_full_name|default:"Unassigned" }}</td>
+        <td>{{ ticket.created_at|date:"M j, Y" }}</td>
+        <td class="actions"><a href="{% url 'portal:support_ticket_detail' ticket.pk %}" class="p-btn p-btn-secondary p-btn-sm">View</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="p-empty">No tickets</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

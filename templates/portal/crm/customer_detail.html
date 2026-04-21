@@ -1,0 +1,69 @@
+{% extends "portal/base.html" %}
+{% block title %}Customer: {{ customer.get_full_name|default:customer.username }}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">{{ customer.get_full_name|default:customer.username }}</h2>
+
+<div class="p-grid-2col">
+  <div class="p-card">
+    <h3 class="p-section-title">Details</h3>
+    <div class="detail-item p-mb-12"><span class="label">Email</span><div class="value">{{ customer.email }}</div></div>
+    <div class="detail-item p-mb-12"><span class="label">Phone</span><div class="value">{{ customer.phone|default:"—" }}</div></div>
+    <div class="detail-item p-mb-12"><span class="label">Role</span><div class="value">{{ customer.get_role_display }}</div></div>
+    <div class="detail-item p-mb-12"><span class="label">Joined</span><div class="value">{{ customer.date_joined|date:"M j, Y" }}</div></div>
+    {% if profile %}
+    <div class="detail-item p-mb-12"><span class="label">Tier</span><div class="value"><span class="badge badge-{{ profile.tier }}">{{ profile.get_tier_display }}</span></div></div>
+    <div class="detail-item p-mb-12"><span class="label">Lifetime Value</span><div class="value">${{ profile.lifetime_value }}</div></div>
+    {% endif %}
+  </div>
+
+  <div class="p-card">
+    <h3 class="p-section-title">Add Interaction</h3>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add_note">
+      <div class="p-form-group">
+        <label for="id_subject">Subject</label>
+        <input type="text" name="subject" id="id_subject" class="p-form-control" required>
+      </div>
+      <div class="p-form-group">
+        <label for="id_body">Details</label>
+        <textarea name="body" id="id_body" class="p-form-control" rows="3" required></textarea>
+      </div>
+      <button type="submit" class="p-btn p-btn-primary p-btn-sm">Add Note</button>
+    </form>
+  </div>
+</div>
+
+<div class="p-card p-mt-24">
+  <h3 class="p-section-title">Orders</h3>
+  <table class="p-table">
+    <thead><tr><th>Order</th><th>Status</th><th>Total</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+      {% for order in orders %}
+      <tr>
+        <td><strong>{{ order.order_number }}</strong></td>
+        <td><span class="badge badge-{{ order.status }}">{{ order.get_status_display }}</span></td>
+        <td>${{ order.total }}</td>
+        <td>{{ order.created_at|date:"M j, Y" }}</td>
+        <td class="actions"><a href="{% url 'portal:order_detail' order.pk %}" class="p-btn p-btn-secondary p-btn-sm">View</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="p-empty-sm">No orders</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="p-card p-mt-24">
+  <h3 class="p-section-title">Interaction History</h3>
+  {% for interaction in interactions %}
+  <div class="p-list-row-sm">
+    <span class="badge badge-{{ interaction.interaction_type }}">{{ interaction.get_interaction_type_display }}</span>
+    <span class="p-interaction-meta">{{ interaction.created_at|date:"M j, Y H:i" }} — {{ interaction.created_by.get_full_name|default:"System" }}</span>
+    <p class="p-interaction-note">{{ interaction.notes }}</p>
+  </div>
+  {% empty %}
+  <p class="p-muted">No interactions yet</p>
+  {% endfor %}
+</div>
+{% endblock content %}

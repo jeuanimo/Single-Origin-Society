@@ -1,0 +1,32 @@
+{% extends "portal/base.html" %}
+{% block title %}{% if supplier %}Edit Supplier{% else %}New Supplier{% endif %}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">{% if supplier %}Edit: {{ supplier.name }}{% else %}New Supplier{% endif %}</h2>
+<form method="post">
+  {% csrf_token %}
+  <div class="p-card">
+    <div class="p-form-group">
+      <label for="id_name">Company Name</label>
+      <input type="text" name="name" id="id_name" class="p-form-control" value="{{ supplier.name|default:'' }}" required>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group"><label for="id_contact_name">Contact Name</label><input type="text" name="contact_name" id="id_contact_name" class="p-form-control" value="{{ supplier.contact_name|default:'' }}"></div>
+      <div class="p-form-group"><label for="id_email">Email</label><input type="email" name="email" id="id_email" class="p-form-control" value="{{ supplier.email|default:'' }}"></div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group"><label for="id_phone">Phone</label><input type="text" name="phone" id="id_phone" class="p-form-control" value="{{ supplier.phone|default:'' }}"></div>
+      <div class="p-form-group"><label for="id_website">Website</label><input type="url" name="website" id="id_website" class="p-form-control" value="{{ supplier.website|default:'' }}"></div>
+    </div>
+    <div class="p-form-group"><label for="id_address">Address</label><textarea name="address" id="id_address" class="p-form-control" rows="3">{{ supplier.address|default:'' }}</textarea></div>
+    <div class="p-form-group"><label for="id_notes">Notes</label><textarea name="notes" id="id_notes" class="p-form-control" rows="3">{{ supplier.notes|default:'' }}</textarea></div>
+    <div class="p-form-check">
+      <input type="checkbox" name="is_active" id="is_active" {% if supplier.is_active or not supplier %}checked{% endif %}>
+      <label for="is_active">Active</label>
+    </div>
+  </div>
+  <div class="p-form-actions">
+    <button type="submit" class="p-btn p-btn-primary">Save Supplier</button>
+    <a href="{% url 'portal:supplier_list' %}" class="p-btn p-btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock content %}

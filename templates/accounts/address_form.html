@@ -1,0 +1,19 @@
+{% extends "storefront/base.html" %}
+{% block title %}Add Address · Single Origin Society{% endblock title %}
+{% block content %}
+<section class="section">
+  <div class="container-narrow auth-form-md">
+    <h1 class="auth-heading">Add Address</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-gold btn-block">Save Address</button>
+    </form>
+  </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,50 @@
+{% extends "portal/base.html" %}
+{% block title %}Stock Adjustment{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Stock Adjustment: {{ stock.product.name }}</h2>
+<div class="p-grid-2col">
+  <div class="p-card">
+    <h3 class="p-section-title">Current Stock</h3>
+    <div class="detail-grid">
+      <div class="detail-item"><span class="label">On Hand</span><div class="value">{{ stock.quantity_on_hand }}</div></div>
+      <div class="detail-item"><span class="label">Reserved</span><div class="value">{{ stock.quantity_reserved }}</div></div>
+      <div class="detail-item"><span class="label">Available</span><div class="value">{{ stock.available }}</div></div>
+      <div class="detail-item"><span class="label">Reorder Level</span><div class="value">{{ stock.reorder_level }}</div></div>
+    </div>
+    <form method="post" class="p-mt-24">
+      {% csrf_token %}
+      <div class="p-form-group">
+        <label for="id_movement_type">Movement Type</label>
+        <select name="movement_type" id="id_movement_type" class="p-form-control">
+          <option value="in">Stock In</option>
+          <option value="out">Stock Out</option>
+          <option value="adjustment">Set Quantity</option>
+          <option value="return">Return</option>
+        </select>
+      </div>
+      <div class="p-form-group">
+        <label for="id_quantity">Quantity</label>
+        <input type="number" name="quantity" id="id_quantity" class="p-form-control" required>
+      </div>
+      <div class="p-form-group">
+        <label for="id_notes">Notes</label>
+        <textarea name="notes" id="id_notes" class="p-form-control" rows="3"></textarea>
+      </div>
+      <button type="submit" class="p-btn p-btn-primary">Save Adjustment</button>
+    </form>
+  </div>
+  <div class="p-card">
+    <h3 class="p-section-title">Recent Movements</h3>
+    {% for m in movements %}
+    <div class="p-list-row-sm">
+      <span class="badge badge-{% if m.movement_type == 'in' or m.movement_type == 'return' %}active{% else %}draft{% endif %}">{{ m.get_movement_type_display }}</span>
+      <strong>{{ m.quantity }}</strong>
+      <span class="p-muted-ml">{{ m.created_at|date:"M j, Y H:i" }}</span>
+      {% if m.notes %}<br><span class="p-muted">{{ m.notes }}</span>{% endif %}
+    </div>
+    {% empty %}
+    <p class="p-muted">No movements recorded</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

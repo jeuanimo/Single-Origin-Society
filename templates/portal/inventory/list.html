@@ -1,0 +1,38 @@
+{% extends "portal/base.html" %}
+{% block title %}Inventory{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Inventory</h2>
+  <a href="?low=1" class="p-btn p-btn-secondary p-btn-sm">Show Low Stock Only</a>
+</div>
+<div class="p-search-bar">
+  <form method="get" class="p-search-form">
+    <input type="text" name="q" value="{{ search_query }}" placeholder="Search by product name..." class="p-search-input">
+    <button type="submit" class="p-btn p-btn-secondary">Search</button>
+  </form>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead>
+      <tr><th>Product</th><th>On Hand</th><th>Reserved</th><th>Available</th><th>Reorder Level</th><th>Location</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for stock in page_obj %}
+      <tr>
+        <td><strong>{{ stock.product.name }}</strong></td>
+        <td>{{ stock.quantity_on_hand }}</td>
+        <td>{{ stock.quantity_reserved }}</td>
+        <td>{{ stock.available }}</td>
+        <td>{{ stock.reorder_level }}</td>
+        <td>{{ stock.location|default:"—" }}</td>
+        <td>{% if stock.needs_reorder %}<span class="badge badge-low">Low Stock</span>{% else %}<span class="badge badge-active">OK</span>{% endif %}</td>
+        <td class="actions"><a href="{% url 'portal:stock_adjustment' stock.pk %}" class="p-btn p-btn-secondary p-btn-sm">Adjust</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="p-empty">No inventory records</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

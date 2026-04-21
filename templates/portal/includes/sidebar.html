@@ -1,0 +1,173 @@
+{% load portal_permissions %}
+<nav class="portal-sidebar">
+  <div class="sidebar-brand">Single Origin <span>Society</span></div>
+  <div class="sidebar-nav">
+    {% if request.user|has_portal_perm:'dashboard.view' %}
+    <div class="sidebar-section">Main</div>
+    <a href="{% url 'portal:dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+      <span class="icon">◉</span> Dashboard
+    </a>
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'products.view' or request.user|has_portal_perm:'orders.view' or request.user|has_portal_perm:'fulfillment.manage' or request.user|has_portal_perm:'inventory.view' or request.user|has_portal_perm:'shipping.view' or request.user|has_portal_perm:'returns.view' %}
+    <div class="sidebar-section">Commerce</div>
+    {% if request.user|has_portal_perm:'products.view' %}
+    <a href="{% url 'portal:product_list' %}" class="sidebar-link {% if 'product' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◈</span> Products
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'orders.view' %}
+    <a href="{% url 'portal:order_list' %}" class="sidebar-link {% if 'order' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◇</span> Orders
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'fulfillment.manage' %}
+    <a href="{% url 'portal:fulfillment_queue' %}" class="sidebar-link {% if 'fulfillment' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">⊳</span> Fulfillment
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'inventory.view' %}
+    <a href="{% url 'portal:inventory_list' %}" class="sidebar-link {% if 'inventory' in request.resolver_match.url_name or 'stock' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▦</span> Inventory
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'shipping.view' %}
+    <a href="{% url 'portal:shipment_list' %}" class="sidebar-link {% if 'shipment' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▸</span> Shipping
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'returns.view' %}
+    <a href="{% url 'portal:return_list' %}" class="sidebar-link {% if 'return' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">↩</span> Returns
+    </a>
+    {% endif %}
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'purchasing.view' %}
+    <div class="sidebar-section">Supply Chain</div>
+    <a href="{% url 'portal:supplier_list' %}" class="sidebar-link {% if 'supplier' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◎</span> Suppliers
+    </a>
+    <a href="{% url 'portal:purchase_order_list' %}" class="sidebar-link {% if 'purchase_order' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">⊞</span> Purchase Orders
+    </a>
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'crm.view' or request.user|has_portal_perm:'support.view' or request.user|has_portal_perm:'reviews.view' %}
+    <div class="sidebar-section">Customers</div>
+    {% if request.user|has_portal_perm:'crm.view' %}
+    <a href="{% url 'portal:customer_list' %}" class="sidebar-link {% if 'customer' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◌</span> CRM
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'support.view' %}
+    <a href="{% url 'portal:support_ticket_list' %}" class="sidebar-link {% if 'support' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◔</span> Support Tickets
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'reviews.view' %}
+    <a href="{% url 'portal:review_list' %}" class="sidebar-link {% if 'review' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">★</span> Reviews
+    </a>
+    {% endif %}
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'marketing.view' %}
+    <div class="sidebar-section">Growth</div>
+    <a href="{% url 'portal:marketing_hub' %}" class="sidebar-link {% if 'marketing_hub' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">⬡</span> Marketing Hub
+    </a>
+    <a href="{% url 'portal:campaign_list' %}" class="sidebar-link {% if 'campaign' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◆</span> Campaigns
+    </a>
+    <a href="{% url 'portal:coupon_list' %}" class="sidebar-link {% if 'coupon' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">%</span> Coupons
+    </a>
+    <a href="{% url 'portal:subscriber_list' %}" class="sidebar-link {% if 'subscriber' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">✉</span> Subscribers
+    </a>
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'content.view' %}
+    <div class="sidebar-section">Content</div>
+    <a href="{% url 'portal:content_hub' %}" class="sidebar-link {% if 'content_hub' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▥</span> Content Hub
+    </a>
+    <a href="{% url 'portal:content_pages' %}" class="sidebar-link {% if 'content_page' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▤</span> Pages
+    </a>
+    <a href="{% url 'portal:content_blog' %}" class="sidebar-link {% if 'content_blog' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▧</span> Blog
+    </a>
+    <a href="{% url 'portal:content_guides' %}" class="sidebar-link {% if 'content_guide' in request.resolver_match.url_name or 'content_guides' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">☕</span> Brewing Guides
+    </a>
+    <a href="{% url 'portal:content_tasting_notes' %}" class="sidebar-link {% if 'content_tasting_note' in request.resolver_match.url_name or 'content_tasting_notes' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◍</span> Tasting Notes
+    </a>
+    <a href="{% url 'portal:content_journal_posts' %}" class="sidebar-link {% if 'content_journal' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">✦</span> Ritual Journal
+    </a>
+    <a href="{% url 'portal:content_wholesale_inquiries' %}" class="sidebar-link {% if 'content_wholesale' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▣</span> Wholesale Inquiries
+    </a>
+    <a href="{% url 'portal:content_ambassador_inquiries' %}" class="sidebar-link {% if 'content_ambassador' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">✶</span> Ambassador Inquiries
+    </a>
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'fundraising.view' %}
+    <div class="sidebar-section">Impact</div>
+    <a href="{% url 'portal:fundraising_manage' %}" class="sidebar-link {% if 'fundraising' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">♥</span> Fundraising
+    </a>
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'finance.view' or request.user|has_portal_perm:'reports.view' %}
+    <div class="sidebar-section">Finance</div>
+    {% if request.user|has_portal_perm:'finance.view' %}
+    <a href="{% url 'portal:finance_overview' %}" class="sidebar-link {% if 'finance' in request.resolver_match.url_name or 'expense' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">$</span> Finance
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'reports.view' %}
+    <a href="{% url 'portal:reports_overview' %}" class="sidebar-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◫</span> Reports
+    </a>
+    {% endif %}
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'notes.view' or request.user|has_portal_perm:'activity.view' %}
+    <div class="sidebar-section">Operations</div>
+    {% if request.user|has_portal_perm:'notes.view' %}
+    <a href="{% url 'portal:notes_list' %}" class="sidebar-link {% if 'notes' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">✎</span> Notes
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'activity.view' %}
+    <a href="{% url 'portal:activity_log' %}" class="sidebar-link {% if 'activity' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">▪</span> Activity Log
+    </a>
+    {% endif %}
+    {% endif %}
+
+    {% if request.user|has_portal_perm:'staff.manage' or request.user|has_portal_perm:'settings.manage' %}
+    <div class="sidebar-section">Admin</div>
+    {% if request.user|has_portal_perm:'staff.manage' %}
+    <a href="{% url 'portal:staff_list' %}" class="sidebar-link {% if 'staff' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">◑</span> Staff
+    </a>
+    {% endif %}
+    {% if request.user|has_portal_perm:'settings.manage' %}
+    <a href="{% url 'portal:business_settings' %}" class="sidebar-link {% if 'business_settings' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">⚙</span> Settings
+    </a>
+    {% endif %}
+    {% endif %}
+
+    <div class="sidebar-section p-sidebar-spacer"></div>
+    <a href="{% url 'storefront:home' %}" class="sidebar-link">
+      <span class="icon">←</span> View Storefront
+    </a>
+  </div>
+</nav>

@@ -1,0 +1,39 @@
+{% extends "portal/base.html" %}
+{% block title %}Import Products CSV{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Import Products via CSV</h2>
+  <a href="{% url 'portal:product_list' %}" class="p-btn p-btn-secondary p-btn-sm">Back to Products</a>
+</div>
+
+<div class="p-card p-mb-24">
+  <p class="p-muted">Expected headers: category, category_type, name, sku, price, description, is_active, is_featured</p>
+  <form method="post" enctype="multipart/form-data" class="p-form-row">
+    {% csrf_token %}
+    <div>
+      <label for="id_csv_file" class="p-label">CSV File</label>
+      {{ form.csv_file }}
+      {% for error in form.csv_file.errors %}
+      <div class="field-error">{{ error }}</div>
+      {% endfor %}
+    </div>
+    <div class="p-actions-right">
+      <button type="submit" class="p-btn p-btn-primary p-btn-sm">Import</button>
+    </div>
+  </form>
+</div>
+
+{% if result %}
+<div class="p-card">
+  <h3 class="p-page-title">Import Result</h3>
+  <p class="p-muted">Created: {{ result.created }} | Updated: {{ result.updated }} | Failed: {{ result.failed }}</p>
+  {% if result.errors %}
+  <ul>
+    {% for error in result.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock content %}

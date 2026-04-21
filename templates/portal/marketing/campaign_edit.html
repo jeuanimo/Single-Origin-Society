@@ -1,0 +1,46 @@
+{% extends "portal/base.html" %}
+{% block title %}{% if campaign %}Edit Campaign{% else %}New Campaign{% endif %}{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">{% if campaign %}Edit: {{ campaign.name }}{% else %}New Campaign{% endif %}</h2>
+<form method="post" class="p-form-layout">
+  {% csrf_token %}
+  <div class="p-card">
+    <div class="p-form-group"><label for="id_name">Campaign Name</label><input type="text" name="name" id="id_name" class="p-form-control" value="{{ campaign.name|default:'' }}" required></div>
+    <div class="p-form-row">
+      <div class="p-form-group">
+        <label for="id_channel">Channel</label>
+        <select name="channel" id="id_channel" class="p-form-control">
+          <option value="email" {% if campaign.channel == 'email' %}selected{% endif %}>Email</option>
+          <option value="social" {% if campaign.channel == 'social' %}selected{% endif %}>Social Media</option>
+          <option value="search" {% if campaign.channel == 'search' %}selected{% endif %}>Search</option>
+          <option value="display" {% if campaign.channel == 'display' %}selected{% endif %}>Display</option>
+          <option value="content" {% if campaign.channel == 'content' %}selected{% endif %}>Content</option>
+          <option value="other" {% if campaign.channel == 'other' %}selected{% endif %}>Other</option>
+        </select>
+      </div>
+      <div class="p-form-group">
+        <label for="id_status">Status</label>
+        <select name="status" id="id_status" class="p-form-control">
+          <option value="draft" {% if campaign.status == 'draft' %}selected{% endif %}>Draft</option>
+          <option value="active" {% if campaign.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="paused" {% if campaign.status == 'paused' %}selected{% endif %}>Paused</option>
+          <option value="completed" {% if campaign.status == 'completed' %}selected{% endif %}>Completed</option>
+        </select>
+      </div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group"><label for="id_budget">Budget</label><input type="number" step="0.01" name="budget" id="id_budget" class="p-form-control" value="{{ campaign.budget|default:'' }}"></div>
+      <div class="p-form-group"><label for="id_spend">Spend</label><input type="number" step="0.01" name="spend" id="id_spend" class="p-form-control" value="{{ campaign.spend|default:'0' }}"></div>
+    </div>
+    <div class="p-form-row">
+      <div class="p-form-group"><label for="id_start_date">Start Date</label><input type="date" name="start_date" id="id_start_date" class="p-form-control" value="{{ campaign.start_date|date:'Y-m-d'|default:'' }}"></div>
+      <div class="p-form-group"><label for="id_end_date">End Date</label><input type="date" name="end_date" id="id_end_date" class="p-form-control" value="{{ campaign.end_date|date:'Y-m-d'|default:'' }}"></div>
+    </div>
+    <div class="p-form-group"><label for="id_description">Description</label><textarea name="description" id="id_description" class="p-form-control" rows="4">{{ campaign.description|default:'' }}</textarea></div>
+  </div>
+  <div class="p-form-actions">
+    <button type="submit" class="p-btn p-btn-primary">Save Campaign</button>
+    <a href="{% url 'portal:campaign_list' %}" class="p-btn p-btn-secondary">Cancel</a>
+  </div>
+</form>
+{% endblock content %}

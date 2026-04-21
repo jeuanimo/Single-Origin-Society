@@ -1,0 +1,109 @@
+{% extends "storefront/base.html" %}
+{% block title %}Checkout · Single Origin Society{% endblock title %}
+{% block content %}
+<div class="page-hero">
+  <h1>Checkout</h1>
+</div>
+<section class="section">
+  <div class="container">
+    <form method="post" class="checkout-grid">
+      {% csrf_token %}
+      <div>
+        <h2 class="checkout-section-title">Shipping Information</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="id_first_name">First Name</label>
+            <input type="text" name="first_name" id="id_first_name" class="form-control" required value="{{ user.first_name|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label for="id_last_name">Last Name</label>
+            <input type="text" name="last_name" id="id_last_name" class="form-control" required value="{{ user.last_name|default:'' }}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="id_email">Email</label>
+          <input type="email" name="email" id="id_email" class="form-control" required value="{{ user.email|default:'' }}">
+        </div>
+        <div class="form-group">
+          <label for="id_phone">Phone</label>
+          <input type="tel" name="phone" id="id_phone" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="id_shipping_line1">Address Line 1</label>
+          <input type="text" name="shipping_line1" id="id_shipping_line1" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="id_shipping_line2">Address Line 2</label>
+          <input type="text" name="shipping_line2" id="id_shipping_line2" class="form-control">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="id_shipping_city">City</label>
+            <input type="text" name="shipping_city" id="id_shipping_city" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="id_shipping_state">State</label>
+            <input type="text" name="shipping_state" id="id_shipping_state" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="id_shipping_postal">Postal Code</label>
+          <input type="text" name="shipping_postal" id="id_shipping_postal" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="id_shipping_country">Country</label>
+          <input type="text" name="shipping_country" id="id_shipping_country" class="form-control" value="US" required>
+        </div>
+        <div class="form-group">
+          <label for="id_shipping_method">Shipping Option</label>
+          <select name="shipping_method" id="id_shipping_method" class="form-control">
+            <option value="standard" {% if shipping_method == 'standard' %}selected{% endif %}>Standard{% if subtotal >= business_settings.free_shipping_threshold %} (Free){% else %} ($6.95){% endif %}</option>
+            <option value="express" {% if shipping_method == 'express' %}selected{% endif %}>Express ($14.95)</option>
+            <option value="overnight" {% if shipping_method == 'overnight' %}selected{% endif %}>Overnight ($29.95)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="id_promo_code">Promo Code</label>
+          <input type="text" name="promo_code" id="id_promo_code" class="form-control" value="{{ pricing.applied_promo_code }}">
+        </div>
+        <div class="form-group">
+          <label for="id_gift_note">Gift Note (optional)</label>
+          <textarea name="gift_note" id="id_gift_note" class="form-control" rows="4" placeholder="Add a note to include with your gift"></textarea>
+        </div>
+        <button type="submit" class="btn btn-gold btn-block checkout-submit">Place Order</button>
+      </div>
+      <div class="order-summary-sidebar">
+        <h3 class="order-summary-title">Order Summary</h3>
+        {% for item in items %}
+        <div class="order-line-item">
+          <span>{{ item.product.name }} × {{ item.quantity }}</span>
+          <span>${{ item.line_total }}</span>
+        </div>
+        {% endfor %}
+        <div class="order-total-row">
+          <span>Subtotal</span>
+          <span class="total-price">${{ subtotal }}</span>
+        </div>
+        {% if pricing.discount > 0 %}
+        <div class="order-total-row">
+          <span>Discount</span>
+          <span class="total-price">-${{ pricing.discount }}</span>
+        </div>
+        {% endif %}
+        <div class="order-total-row">
+          <span>Shipping</span>
+          <span class="total-price">${{ pricing.shipping_cost }}</span>
+        </div>
+        <div class="order-total-row">
+          <span>Tax</span>
+          <span class="total-price">${{ pricing.tax }}</span>
+        </div>
+        <div class="order-total-row">
+          <span>Total</span>
+          <span class="total-price">${{ pricing.total }}</span>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock content %}

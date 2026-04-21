@@ -1,0 +1,39 @@
+{% extends "portal/base.html" %}
+{% block title %}Internal Notes{% endblock title %}
+{% block content %}
+<div class="p-page-header">
+  <h2 class="p-page-title">Internal Notes</h2>
+  <div>
+    <a href="{% url 'portal:notes_add' %}" class="p-btn p-btn-primary p-btn-sm">Add Note</a>
+    <form class="p-search p-search-inline" method="get">
+      <input type="text" name="q" value="{{ search_query }}" placeholder="Search notes…" class="p-form-control p-search-input">
+    </form>
+  </div>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead>
+      <tr><th>Subject</th><th>Customer</th><th>Author</th><th>Date</th></tr>
+    </thead>
+    <tbody>
+      {% for note in page_obj %}
+      <tr>
+        <td><strong>{{ note.subject }}</strong></td>
+        <td>
+          {% if note.customer %}
+          <a href="{% url 'portal:customer_detail' note.customer.pk %}">{{ note.customer.get_full_name|default:note.customer.email }}</a>
+          {% else %}
+          —
+          {% endif %}
+        </td>
+        <td>{{ note.created_by.get_full_name|default:"—" }}</td>
+        <td>{{ note.created_at|date:"M j, Y g:i A" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="p-empty">No notes yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}

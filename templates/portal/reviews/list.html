@@ -1,0 +1,34 @@
+{% extends "portal/base.html" %}
+{% block title %}Reviews{% endblock title %}
+{% block content %}
+<h2 class="p-page-title-mb">Product Reviews</h2>
+<div class="p-filters">
+  <a href="{% url 'portal:review_list' %}" class="p-filter-btn {% if not current_status %}active{% endif %}">All</a>
+  <a href="?status=pending" class="p-filter-btn {% if current_status == 'pending' %}active{% endif %}">Pending</a>
+  <a href="?status=approved" class="p-filter-btn {% if current_status == 'approved' %}active{% endif %}">Approved</a>
+  <a href="?status=rejected" class="p-filter-btn {% if current_status == 'rejected' %}active{% endif %}">Rejected</a>
+</div>
+<div class="p-card">
+  <table class="p-table">
+    <thead>
+      <tr><th>Product</th><th>Customer</th><th>Rating</th><th>Title</th><th>Status</th><th>Date</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for review in page_obj %}
+      <tr>
+        <td>{{ review.product.name }}</td>
+        <td>{{ review.user.email }}</td>
+        <td>{{ review.rating }}★</td>
+        <td>{{ review.title|truncatewords:6 }}</td>
+        <td><span class="badge badge-{{ review.status }}">{{ review.get_status_display }}</span></td>
+        <td>{{ review.created_at|date:"M j, Y" }}</td>
+        <td class="actions"><a href="{% url 'portal:review_moderate' review.pk %}" class="p-btn p-btn-secondary p-btn-sm">Review</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="p-empty">No reviews</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% include "portal/includes/pagination.html" %}
+</div>
+{% endblock content %}
