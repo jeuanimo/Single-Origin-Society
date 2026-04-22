@@ -1426,7 +1426,7 @@ textarea:focus-visible {
 
 /* Mobile portal navigation drawer */
 .portal-nav-toggle {
-  display: none;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   border: 1px solid rgba(184, 164, 114, 0.42);
@@ -1446,6 +1446,22 @@ textarea:focus-visible {
 
 .portal-nav-overlay {
   display: none;
+}
+
+.portal-sidebar {
+  transition: transform 0.28s var(--p-ease);
+}
+
+.portal-main {
+  transition: margin-left 0.28s var(--p-ease);
+}
+
+body.portal-nav-collapsed .portal-sidebar {
+  transform: translateX(-105%);
+}
+
+body.portal-nav-collapsed .portal-main {
+  margin-left: 0;
 }
 
 @media (max-width: 1024px) {
@@ -1468,10 +1484,6 @@ textarea:focus-visible {
 
   .portal-main {
     margin-left: 0;
-  }
-
-  .portal-nav-toggle {
-    display: inline-flex;
   }
 
   .portal-nav-overlay {

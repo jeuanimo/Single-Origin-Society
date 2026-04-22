@@ -47,14 +47,33 @@
         return;
       }
 
+      var syncToggleState = function () {
+        var isVisible;
+        if (smallScreenQuery.matches) {
+          isVisible = body.classList.contains('portal-nav-open');
+        } else {
+          isVisible = !body.classList.contains('portal-nav-collapsed');
+        }
+        toggle.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+        toggle.setAttribute('aria-label', isVisible ? 'Close navigation' : 'Open navigation');
+      };
+
       var setOpenState = function (isOpen) {
         body.classList.toggle('portal-nav-open', isOpen);
-        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-        toggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+        syncToggleState();
+      };
+
+      var setCollapsedState = function (isCollapsed) {
+        body.classList.toggle('portal-nav-collapsed', isCollapsed);
+        syncToggleState();
       };
 
       toggle.addEventListener('click', function () {
-        setOpenState(!body.classList.contains('portal-nav-open'));
+        if (smallScreenQuery.matches) {
+          setOpenState(!body.classList.contains('portal-nav-open'));
+        } else {
+          setCollapsedState(!body.classList.contains('portal-nav-collapsed'));
+        }
       });
 
       overlay.addEventListener('click', function () {
@@ -64,17 +83,22 @@
       if (linkContainer) {
         linkContainer.addEventListener('click', function (event) {
           var target = event.target;
-          if (target && target.closest('a')) {
+          if (smallScreenQuery.matches && target && target.closest('a')) {
             setOpenState(false);
           }
         });
       }
 
       smallScreenQuery.addEventListener('change', function (event) {
-        if (!event.matches) {
+        if (event.matches) {
+          setCollapsedState(false);
+        } else {
           setOpenState(false);
         }
+        syncToggleState();
       });
+
+      syncToggleState();
     })();
   </script>
 </body>
