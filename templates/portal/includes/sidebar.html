@@ -1,7 +1,7 @@
 {% load portal_permissions %}
-<nav class="portal-sidebar">
+<nav class="portal-sidebar" id="portalSidebar">
   <div class="sidebar-brand">Single Origin <span>Society</span></div>
-  <div class="sidebar-nav">
+  <div class="sidebar-nav" data-portal-nav-links>
     {% if request.user|has_portal_perm:'dashboard.view' %}
     <div class="sidebar-section">Main</div>
     <a href="{% url 'portal:dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">

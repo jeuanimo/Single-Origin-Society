@@ -33,6 +33,49 @@
       </div>
     </div>
   </div>
+  <button type="button" class="portal-nav-overlay" data-portal-nav-overlay aria-label="Close navigation"></button>
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script>
+    (function () {
+      var body = document.body;
+      var toggle = document.querySelector('[data-portal-nav-toggle]');
+      var overlay = document.querySelector('[data-portal-nav-overlay]');
+      var linkContainer = document.querySelector('[data-portal-nav-links]');
+      var smallScreenQuery = window.matchMedia('(max-width: 1024px)');
+
+      if (!toggle || !overlay) {
+        return;
+      }
+
+      var setOpenState = function (isOpen) {
+        body.classList.toggle('portal-nav-open', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+      };
+
+      toggle.addEventListener('click', function () {
+        setOpenState(!body.classList.contains('portal-nav-open'));
+      });
+
+      overlay.addEventListener('click', function () {
+        setOpenState(false);
+      });
+
+      if (linkContainer) {
+        linkContainer.addEventListener('click', function (event) {
+          var target = event.target;
+          if (target && target.closest('a')) {
+            setOpenState(false);
+          }
+        });
+      }
+
+      smallScreenQuery.addEventListener('change', function (event) {
+        if (!event.matches) {
+          setOpenState(false);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
