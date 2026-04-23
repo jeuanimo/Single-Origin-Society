@@ -336,7 +336,10 @@ def ritual_journal_detail(request, slug):
 
 def about(request):
     page = Page.objects.filter(slug="about").first()
-    return render(request, "storefront/about.html", {"page": page})
+    return render(request, "storefront/about.html", {
+        "page": page,
+        "page_visual_alt": _page_image_alt(page, "About page visual"),
+    })
 
 
 def contact(request):
@@ -351,6 +354,7 @@ def policies(request, slug="shipping"):
     fallback = POLICY_FALLBACKS.get(slug, {})
     return render(request, "storefront/policies.html", {
         "page": page,
+        "page_visual_alt": _page_image_alt(page, "Policy page visual"),
         "policy_slug": slug,
         "policy_title": fallback.get("title", "Policies"),
         "policy_body": fallback.get("body", "<p>Policy content coming soon. Please contact us with any questions.</p>"),
@@ -362,6 +366,7 @@ def info_page(request, slug):
     fallback = INFO_PAGE_FALLBACKS.get(slug, {})
     return render(request, TEMPLATE_INFO_PAGE, {
         "page": page,
+        "page_visual_alt": _page_image_alt(page, "Page visual"),
         "title": page.title if page else fallback.get("title", "Information"),
         "body": page.body if page else fallback.get("body", INFO_BODY_FALLBACK),
     })
@@ -579,6 +584,12 @@ def _newsletter_tracking_defaults(request):
 def _get_page_with_fallback(slug, fallback_map):
     page = Page.objects.filter(slug=slug).first()
     return page, fallback_map.get(slug, {})
+
+
+def _page_image_alt(page, fallback):
+    if not page:
+        return fallback
+    return (page.image_alt or "").strip() or fallback
 
 
 def _update_subscriber_tracking(subscriber, defaults):

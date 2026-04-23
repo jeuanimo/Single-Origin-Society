@@ -1494,6 +1494,18 @@ select.form-control { appearance: none; cursor: pointer; }
   padding-top: 2rem;
 }
 
+.utility-page-image-wrap {
+  margin-bottom: 1.5rem;
+}
+
+.utility-page-image {
+  width: 100%;
+  max-width: 960px;
+  display: block;
+  border-radius: 12px;
+  border: 1px solid var(--warm-gray);
+}
+
 .guide-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

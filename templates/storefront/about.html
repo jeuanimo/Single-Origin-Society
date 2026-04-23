@@ -9,6 +9,11 @@
 </div>
 <section class="section">
   <div class="container-narrow page-content">
+    {% if page and page.image %}
+      <div class="utility-page-image-wrap">
+        <img src="{{ page.image.url }}" alt="{{ page_visual_alt }}" class="utility-page-image" width="1200" height="700">
+      </div>
+    {% endif %}
     {% render_block "about" "intro" as about_intro %}
     {% if about_intro %}
       {{ about_intro }}

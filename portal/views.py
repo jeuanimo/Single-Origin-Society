@@ -779,9 +779,16 @@ def content_page_edit(request, pk=None):
         data = request.POST
         obj = page or Page()
         obj.title = data.get("title", "")
+        obj.slug = data.get("slug", "").strip() or obj.slug
         obj.body = data.get("body", "")
         obj.meta_title = data.get("meta_title", "")
         obj.meta_description = data.get("meta_description", "")
+        obj.image_alt = data.get("image_alt", "").strip()
+        if request.FILES.get("image"):
+            obj.image = request.FILES["image"]
+        elif data.get("clear_image") == "on" and obj.image:
+            obj.image.delete(save=False)
+            obj.image = None
         obj.is_published = data.get("is_published") == "on"
         obj.save()
         messages.success(request, "Page saved.")

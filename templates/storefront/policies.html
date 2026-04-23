@@ -14,6 +14,11 @@
       <a href="{% url 'storefront:policy_privacy' %}" class="btn btn-sm {% if policy_slug == 'privacy' %}btn-dark{% else %}btn-outline{% endif %}">Privacy</a>
       <a href="{% url 'storefront:policy_terms' %}" class="btn btn-sm {% if policy_slug == 'terms' %}btn-dark{% else %}btn-outline{% endif %}">Terms</a>
     </div>
+    {% if page and page.image %}
+    <div class="utility-page-image-wrap">
+      <img src="{{ page.image.url }}" alt="{{ page_visual_alt }}" class="utility-page-image" width="1200" height="700">
+    </div>
+    {% endif %}
     <div class="page-content">
       {% render_block "policies" policy_slug as policy_block %}{% if policy_block %}{{ policy_block }}{% elif page %}{{ page.body|safe }}{% else %}{{ policy_body|safe }}{% endif %}
     </div>

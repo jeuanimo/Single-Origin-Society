@@ -7,6 +7,8 @@ class Page(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     body = models.TextField()
+    image = models.ImageField(upload_to="pages/", blank=True)
+    image_alt = models.CharField(max_length=200, blank=True)
     meta_title = models.CharField(max_length=200, blank=True)
     meta_description = models.CharField(max_length=300, blank=True)
     is_published = models.BooleanField(default=True)
