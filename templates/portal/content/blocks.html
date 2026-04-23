@@ -35,7 +35,7 @@
         <th>Has Image</th>
         <th>Status</th>
         <th>Updated</th>
-        <th></th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -50,6 +50,12 @@
         <td>{{ block.updated_at|date:"M j, Y" }}</td>
         <td class="actions">
           <a href="{% url 'portal:content_block_edit' block.pk %}" class="p-btn p-btn-secondary p-btn-sm">Edit</a>
+          {% if block.page_editor_url %}
+          <a href="{{ block.page_editor_url }}" class="p-btn p-btn-secondary p-btn-sm">Page Editor</a>
+          {% endif %}
+          {% if block.live_url %}
+          <a href="{{ block.live_url }}" class="p-btn p-btn-secondary p-btn-sm" target="_blank" rel="noopener noreferrer">Open Page</a>
+          {% endif %}
           <form method="post" action="{% url 'portal:content_block_delete' block.pk %}" class="p-inline-form" onsubmit="return confirm('Delete this block?');">
             {% csrf_token %}
             <button type="submit" class="p-btn p-btn-danger p-btn-sm">Delete</button>

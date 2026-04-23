@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.utils.dateparse import parse_datetime
+from django.urls import reverse, NoReverseMatch
 from datetime import timedelta
 import csv
 
@@ -1045,6 +1046,13 @@ def content_blocks(request):
     blocks = ContentBlock.objects.all()
     if page_filter:
         blocks = blocks.filter(page_key=page_filter)
+
+    # Attach destination links so editors can jump directly to the relevant page.
+    blocks = list(blocks)
+    for block in blocks:
+        block.live_url = _resolve_block_live_url(block)
+        block.page_editor_url = _resolve_block_editor_url(block)
+
     return render(request, "portal/content/blocks.html", {
         "blocks": blocks,
         "page_choices": ContentBlock.PAGE_CHOICES,
@@ -1087,6 +1095,52 @@ def content_block_delete(request, pk):
     block.delete()
     messages.success(request, "Content block deleted.")
     return redirect("portal:content_blocks")
+
+
+def _resolve_block_live_url(block):
+    policy_map = {
+        "shipping": "storefront:policy_shipping",
+        "refunds": "storefront:policy_refunds",
+        "privacy": "storefront:policy_privacy",
+        "terms": "storefront:policy_terms",
+    }
+
+    if block.page_key == "home":
+        return reverse("storefront:home")
+    if block.page_key == "about":
+        return reverse("storefront:about")
+    if block.page_key == "contact":
+        return reverse("storefront:contact")
+    if block.page_key == "policies":
+        return reverse(policy_map.get(block.section_key, "storefront:policy_shipping"))
+    if block.page_key == "brewing_guides":
+        return reverse("storefront:brewing_guides")
+    if block.page_key == "ritual":
+        return reverse("storefront:ritual")
+    if block.page_key == "shop":
+        return reverse("storefront:shop")
+    return ""
+
+
+def _resolve_block_editor_url(block):
+    # For static storefront pages, block editing itself is the editor.
+    if block.page_key in {"home", "contact", "ritual", "shop", "custom"}:
+        return reverse("portal:content_block_edit", kwargs={"pk": block.pk})
+
+    if block.page_key == "brewing_guides":
+        return reverse("portal:content_guides")
+
+    if block.page_key == "policies":
+        return reverse("portal:content_pages")
+
+    if block.page_key == "about":
+        try:
+            page = Page.objects.get(slug="about")
+            return reverse("portal:content_page_edit", kwargs={"pk": page.pk})
+        except (Page.DoesNotExist, NoReverseMatch):
+            return reverse("portal:content_pages")
+
+    return reverse("portal:content_pages")
 
 
 # ── Blog CRUD ──────────────────────────────────────────
