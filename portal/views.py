@@ -1069,10 +1069,10 @@ def content_blocks(request):
 
 @portal_required
 def content_block_edit(request, pk=None):
-    block = get_object_or_404(ContentBlock, pk=pk) if pk else None
+    content_block = get_object_or_404(ContentBlock, pk=pk) if pk else None
     if request.method == "POST":
         data = request.POST
-        obj = block or ContentBlock()
+        obj = content_block or ContentBlock()
         obj.page_key = data.get("page_key", "home")
         obj.section_key = data.get("section_key", "").strip()
         obj.label = data.get("label", "").strip()
@@ -1090,7 +1090,7 @@ def content_block_edit(request, pk=None):
         messages.success(request, "Content block saved.")
         return redirect("portal:content_blocks")
     return render(request, "portal/content/block_edit.html", {
-        "block": block,
+        "content_block": content_block,
         "page_choices": ContentBlock.PAGE_CHOICES,
     })
 
