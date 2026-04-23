@@ -1,4 +1,5 @@
 {% extends "storefront/base.html" %}
+{% load content_blocks %}
 {% block title %}Ritual · Single Origin Society{% endblock title %}
 {% block content %}
 <div class="page-hero">
@@ -8,7 +9,9 @@
 
 <section class="section">
   <div class="container-narrow page-content">
+    {% render_block "ritual" "intro" as ritual_intro %}{% if ritual_intro %}{{ ritual_intro }}{% else %}
     <p>Ritual is the heart of the Single Origin Society experience. Explore techniques, tasting references, and journaling tools designed to help you refine every cup.</p>
+    {% endif %}
     <div class="policy-nav">
       <a href="{% url 'storefront:brewing_guides' %}" class="btn btn-sm btn-outline">Brewing Guides</a>
       <a href="{% url 'storefront:tasting_notes' %}" class="btn btn-sm btn-outline">Tasting Notes</a>

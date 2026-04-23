@@ -521,6 +521,17 @@ select.p-form-control {
 .p-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 .p-form-card { background: white; border: 1px solid var(--p-border); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
 .p-form-card { border-radius: var(--p-radius-lg); }
+.p-callout-card {
+  background: var(--p-bg-muted, #f9f7f4);
+  border-left: 3px solid var(--p-gold, #c9a96e);
+}
+.p-no-margin { margin: 0; }
+.p-no-top-margin { margin-top: 0; }
+.p-inline-label { margin-bottom: 0; margin-right: 8px; }
+.p-select-inline { width: auto; display: inline-block; }
+.p-inline-form { display: inline; }
+.p-number-small { width: 100px; }
+.p-top-gap-4 { margin-top: 4px; }
 .p-checkbox { display: flex; align-items: center; gap: 8px; }
 .p-checkbox input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--p-gold); }
 .p-btn-danger { background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }

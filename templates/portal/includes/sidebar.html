@@ -96,6 +96,9 @@
     <a href="{% url 'portal:content_pages' %}" class="sidebar-link {% if 'content_page' in request.resolver_match.url_name %}active{% endif %}">
       <span class="icon">▤</span> Pages
     </a>
+    <a href="{% url 'portal:content_blocks' %}" class="sidebar-link {% if 'content_block' in request.resolver_match.url_name %}active{% endif %}">
+      <span class="icon">⊞</span> Page Sections
+    </a>
     <a href="{% url 'portal:content_blog' %}" class="sidebar-link {% if 'content_blog' in request.resolver_match.url_name %}active{% endif %}">
       <span class="icon">▧</span> Blog
     </a>

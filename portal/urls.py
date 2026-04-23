@@ -60,6 +60,11 @@ urlpatterns = [
     path("content/hub/", views.content_hub, name="content_hub"),
     path("content/pages/new/", views.content_page_edit, name="content_page_new"),
     path("content/pages/<int:pk>/edit/", views.content_page_edit, name="content_page_edit"),
+    # Content Blocks (editable page sections + images)
+    path("content/blocks/", views.content_blocks, name="content_blocks"),
+    path("content/blocks/new/", views.content_block_edit, name="content_block_new"),
+    path("content/blocks/<int:pk>/edit/", views.content_block_edit, name="content_block_edit"),
+    path("content/blocks/<int:pk>/delete/", views.content_block_delete, name="content_block_delete"),
     path("content/blog/", views.content_blog, name="content_blog"),
     path("content/blog/new/", views.content_blog_edit, name="content_blog_new"),
     path("content/blog/<int:pk>/edit/", views.content_blog_edit, name="content_blog_edit"),

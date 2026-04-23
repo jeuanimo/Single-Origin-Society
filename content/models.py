@@ -197,3 +197,42 @@ class AmbassadorInquiryNote(models.Model):
 
     def __str__(self):
         return f"Ambassador note #{self.pk}"
+
+
+class ContentBlock(models.Model):
+    """Editable content block that can be placed on any storefront page."""
+
+    PAGE_CHOICES = [
+        ("home", "Home"),
+        ("about", "About"),
+        ("contact", "Contact"),
+        ("policies", "Policies"),
+        ("brewing_guides", "Brewing Guides"),
+        ("ritual", "Ritual"),
+        ("shop", "Shop / Product List"),
+        ("custom", "Custom Page"),
+    ]
+
+    page_key = models.CharField(max_length=80, choices=PAGE_CHOICES, default="home")
+    section_key = models.CharField(
+        max_length=80,
+        help_text="Unique slot identifier on that page, e.g. 'hero', 'intro', 'banner_1'.",
+    )
+    label = models.CharField(max_length=200, help_text="Admin-facing name shown in the portal.")
+    body = models.TextField(
+        blank=True,
+        help_text="HTML content. Use basic tags: &lt;p&gt;, &lt;h2&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;img&gt;.",
+    )
+    image = models.ImageField(upload_to="content_blocks/", blank=True)
+    image_alt = models.CharField(max_length=200, blank=True)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0, help_text="Lower numbers appear first when multiple blocks share the same section.")
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["page_key", "sort_order", "section_key"]
+        verbose_name = "content block"
+        verbose_name_plural = "content blocks"
+
+    def __str__(self):
+        return f"{self.get_page_key_display()} › {self.label}"

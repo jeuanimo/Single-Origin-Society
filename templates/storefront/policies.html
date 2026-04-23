@@ -1,4 +1,5 @@
 {% extends "storefront/base.html" %}
+{% load content_blocks %}
 {% block title %}{{ page.title|default:policy_title|default:"Policies" }} · Single Origin Society{% endblock title %}
 {% block meta_description %}{{ page.meta_description|default:'Read Single Origin Society policies for shipping, refunds, privacy, and terms.' }}{% endblock meta_description %}
 {% block content %}
@@ -14,11 +15,7 @@
       <a href="{% url 'storefront:policy_terms' %}" class="btn btn-sm {% if policy_slug == 'terms' %}btn-dark{% else %}btn-outline{% endif %}">Terms</a>
     </div>
     <div class="page-content">
-      {% if page %}
-        {{ page.body|safe }}
-      {% else %}
-        {{ policy_body|safe }}
-      {% endif %}
+      {% render_block "policies" policy_slug as policy_block %}{% if policy_block %}{{ policy_block }}{% elif page %}{{ page.body|safe }}{% else %}{{ policy_body|safe }}{% endif %}
     </div>
   </div>
 </section>

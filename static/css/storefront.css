@@ -1490,6 +1490,10 @@ select.form-control { appearance: none; cursor: pointer; }
   margin-bottom: 24px;
 }
 
+.content-block-banner-spacing {
+  padding-top: 2rem;
+}
+
 .guide-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

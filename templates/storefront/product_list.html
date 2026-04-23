@@ -1,10 +1,14 @@
 {% extends "storefront/base.html" %}
+{% load content_blocks %}
 {% block title %}Shop{% if current_category %} {{ current_category|title }}{% endif %} · Single Origin Society{% endblock title %}
 {% block content %}
 <div class="page-hero">
   <h1>{% if current_category %}{{ current_category|title }}{% else %}Shop All{% endif %}</h1>
   <p class="subtitle">Curated selections for the intentional palate</p>
 </div>
+{% render_block "shop" "banner" as shop_banner %}{% if shop_banner %}
+<div class="content-block-section container content-block-banner-spacing">{{ shop_banner }}</div>
+{% endif %}
 
 <section class="section">
   <div class="container">

@@ -18,7 +18,7 @@ from inventory.models import StockRecord, StockMovement
 from purchasing.models import Supplier, PurchaseOrder, PurchaseOrderItem
 from crm.models import CustomerProfile, Interaction
 from marketing.models import Campaign, Coupon, EmailSubscriber
-from content.models import AmbassadorInquiry, BlogPost, Page, RitualJournalEntry, WholesaleInquiry
+from content.models import AmbassadorInquiry, BlogPost, ContentBlock, Page, RitualJournalEntry, WholesaleInquiry
 from fundraising.models import FundraisingCampaign, Donation
 from finance.models import Transaction, Expense
 from shipping.models import Shipment
@@ -1035,6 +1035,58 @@ def support_ticket_detail(request, pk):
         "ticket_messages": ticket_messages,
         "staff_members": staff_members,
     })
+
+
+# ── Content Blocks (Page Sections) ────────────────────
+
+@portal_required
+def content_blocks(request):
+    page_filter = request.GET.get("page_key", "")
+    blocks = ContentBlock.objects.all()
+    if page_filter:
+        blocks = blocks.filter(page_key=page_filter)
+    return render(request, "portal/content/blocks.html", {
+        "blocks": blocks,
+        "page_choices": ContentBlock.PAGE_CHOICES,
+        "page_filter": page_filter,
+    })
+
+
+@portal_required
+def content_block_edit(request, pk=None):
+    block = get_object_or_404(ContentBlock, pk=pk) if pk else None
+    if request.method == "POST":
+        data = request.POST
+        obj = block or ContentBlock()
+        obj.page_key = data.get("page_key", "home")
+        obj.section_key = data.get("section_key", "").strip()
+        obj.label = data.get("label", "").strip()
+        obj.body = data.get("body", "")
+        obj.image_alt = data.get("image_alt", "").strip()
+        obj.is_active = data.get("is_active") == "on"
+        obj.sort_order = int(data.get("sort_order") or 0)
+        # Handle image upload or removal
+        if request.FILES.get("image"):
+            obj.image = request.FILES["image"]
+        elif data.get("clear_image") == "on" and obj.image:
+            obj.image.delete(save=False)
+            obj.image = None
+        obj.save()
+        messages.success(request, "Content block saved.")
+        return redirect("portal:content_blocks")
+    return render(request, "portal/content/block_edit.html", {
+        "block": block,
+        "page_choices": ContentBlock.PAGE_CHOICES,
+    })
+
+
+@portal_required
+@require_POST
+def content_block_delete(request, pk):
+    block = get_object_or_404(ContentBlock, pk=pk)
+    block.delete()
+    messages.success(request, "Content block deleted.")
+    return redirect("portal:content_blocks")
 
 
 # ── Blog CRUD ──────────────────────────────────────────

@@ -1,5 +1,5 @@
 {% extends "storefront/base.html" %}
-{% load static %}
+{% load static content_blocks %}
 {% block title %}Single Origin Society · Quiet Luxury Coffee & Tea{% endblock title %}
 {% block meta_description %}{% if promo_blocks and promo_blocks.0.meta_description %}{{ promo_blocks.0.meta_description }}{% else %}Single Origin Society — luxury coffee and tea collections, rituals, tasting notes, brewing guides, and impact-driven campaigns.{% endif %}{% endblock meta_description %}
 {% block og_title %}{% if promo_blocks and promo_blocks.0.meta_title %}{{ promo_blocks.0.meta_title }}{% else %}Single Origin Society · Quiet Luxury Coffee & Tea{% endif %}{% endblock og_title %}
@@ -9,8 +9,10 @@
   <div class="hero-main-image-wrap animate-fade-in-up">
     <img src="{% static 'images/sos.jpg' %}" alt="Single Origin Society" class="hero-main-image" width="620" height="620">
   </div>
+  {% render_block "home" "hero_text" as hero_text %}{% if hero_text %}{{ hero_text }}{% else %}
   <h1 class="animate-fade-in-up">The Art of Single Origin</h1>
   <p class="animate-fade-in-up-delay">Thoughtfully sourced, carefully roasted, and delivered to your door. Experience coffee and tea as it was meant to be — pure, intentional, and unforgettable.</p>
+  {% endif %}
   <div class="animate-fade-in-up-delay-2">
     <a href="{% url 'storefront:shop' %}" class="btn btn-gold">Explore the Collection</a>
     <a href="{% url 'storefront:about' %}" class="btn btn-outline btn-spaced">Our Story</a>
@@ -340,5 +342,12 @@
     </div>
   </div>
 </section>
+{% endif %}
+
+{% render_block "home" "banner_1" as home_banner_1 %}{% if home_banner_1 %}
+<section class="section"><div class="container"><div class="content-block-section">{{ home_banner_1 }}</div></div></section>
+{% endif %}
+{% render_block "home" "banner_2" as home_banner_2 %}{% if home_banner_2 %}
+<section class="section section-alt"><div class="container"><div class="content-block-section">{{ home_banner_2 }}</div></div></section>
 {% endif %}
 {% endblock content %}
